@@ -90,6 +90,10 @@ public class MOAction
         if (Plugin.ClientState.LocalPlayer == null)
             return (default, null);
 
+        if(Plugin.ClientState.LocalPlayer.ClassJob.RowId ==0){
+            Plugin.PluginLog.Verbose("you're trying to run MoActionPlugin way to early in the Dalamud update cycle and Dalamud still thinks you're an ADV\nFailsafe triggering early return");
+            return (default, null);
+        }
         var applicableActions = Stacks.Where(entry => (
             entry.BaseAction.RowId == action.RowId || entry.BaseAction.RowId == adjusted ||
             actionManager->GetAdjustedActionId(entry.BaseAction.RowId) == adjusted) &&
