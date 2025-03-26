@@ -81,24 +81,35 @@ public class MOAction
 
     private unsafe (Lumina.Excel.Sheets.Action action, IGameObject target) GetActionTarget(uint actionID, ActionType actionType)
     {
-        var action = Sheets.ActionSheet.GetRow(actionID);
+        if(!Sheets.ActionSheet.TryGetRow(actionID,out var action)){
+            Plugin.PluginLog.Verbose("ILLEGAL STATE: Lumina Excel did not succesfully retrieve row.\nFailsafe triggering early return");
+            return (default, null);
+        }
+
+        if (action.RowId == 0){
+            Plugin.PluginLog.Verbose("ILLEGAL STATE: Lumina Excel returned default row.\nFailsafe triggering early return");
+            return (default, null);
+        }
+
+        if (Plugin.ClientState.LocalPlayer == null){
+            Plugin.PluginLog.Verbose("ILLEGAL STATE: Dalamud has no reference to LocalPlayer.\nFailsafe triggering early return");
+            return (default, null);
+        }
+
+        if(Plugin.ClientState.LocalPlayer.ClassJob.RowId ==0){
+            Plugin.PluginLog.Verbose("ILLEGAL STATE: Dalamud thinks you're an ADV\nFailsafe triggering early return");
+            return (default, null);
+        }
 
         var actionManager = ActionManager.Instance();
         var adjusted = actionManager->GetAdjustedActionId(actionID);
-        if (action.RowId == 0)
-            return (default, null);
 
-        if (Plugin.ClientState.LocalPlayer == null)
-            return (default, null);
-
-        if(Plugin.ClientState.LocalPlayer.ClassJob.RowId ==0){
-            Plugin.PluginLog.Verbose("you're trying to run MoActionPlugin way to early in the Dalamud update cycle and Dalamud still thinks you're an ADV\nFailsafe triggering early return");
-            return (default, null);
-        }
-        var applicableActions = Stacks.Where(entry => (
-            entry.BaseAction.RowId == action.RowId || entry.BaseAction.RowId == adjusted ||
-            actionManager->GetAdjustedActionId(entry.BaseAction.RowId) == adjusted) &&
-            (Plugin.ClientState.LocalPlayer.ClassJob.RowId == entry.Job || Plugin.ClientState.LocalPlayer.ClassJob.RowId == Sheets.ClassJobSheet.GetRow(entry.Job).ClassJobParent.RowId));
+        var applicableActions = Stacks.Where(entry => 
+            (entry.BaseAction.RowId == action.RowId ||
+            entry.BaseAction.RowId == adjusted ||
+            actionManager->GetAdjustedActionId(entry.BaseAction.RowId) == adjusted) 
+            && VerifyJobEqualsOrEqualsParentJob(entry.Job, Plugin.ClientState.LocalPlayer.ClassJob.RowId)
+            );
 
         MoActionStack stackToUse = null;
         foreach (var entry in applicableActions)
@@ -207,5 +218,17 @@ public class MOAction
     public unsafe IGameObject GetActorFromCrosshairLocation()
     {
        return Plugin.Objects.CreateObjectReference((nint)TargetSystem.Instance()->GetMouseOverObject(Plugin.Configuration.CrosshairWidth,Plugin.Configuration.CrosshairHeight));
+    }
+
+    private static bool VerifyJobEqualsOrEqualsParentJob(uint job, uint LocalPlayerRowID){
+        if(LocalPlayerRowID == job){
+            return true;
+        }
+        if(Sheets.ClassJobSheet.TryGetRow(job, out var classjob)){
+           if(LocalPlayerRowID == classjob.ClassJobParent.RowId){
+            return true;
+           }
+        }
+        return false;
     }
 }
