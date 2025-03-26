@@ -72,12 +72,8 @@ public class MOAction
 
         // Enqueue GT action
         var actionManager = ActionManager.Instance();
-        if (action.TargetArea && false)
+        if (action.TargetArea)
         {
-            //TODO: Ground target Queueing is currently breaking with a memory access violation somewhere after this hook ends on a framework update if either of these 2 are set.
-            //Setting Either Crashes game right now.
-            //I'm throwing in the towel for a little while.
-            //i'll be back here soon(tm)
             Plugin.PluginLog.Verbose($"setting actionmanager areaTargetingExecuteAtObject to {objectId}");
             actionManager->AreaTargetingExecuteAtObject = objectId;
             Plugin.PluginLog.Verbose($"setting actionmanager AreaTargetingExecuteAtCursor to true");
