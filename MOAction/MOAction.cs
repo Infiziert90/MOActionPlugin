@@ -68,14 +68,23 @@ public class MOAction
 
         var ret = RequestActionHook.Original(thisPtr, actionType, action.RowId, objectId, extraParam, mode, comboRouteId, outOptAreaTargeted);
 
+        Plugin.PluginLog.Verbose($"Executed Action {action.Name.ExtractText()} with ActionID {action.RowId} on object with ObjectId {objectId}, response: {ret}");
+
         // Enqueue GT action
         var actionManager = ActionManager.Instance();
-        if (action.TargetArea)
+        if (action.TargetArea && false)
         {
+            //TODO: Ground target Queueing is currently breaking with a memory access violation somewhere after this hook ends on a framework update if either of these 2 are set.
+            //Setting Either Crashes game right now.
+            //I'm throwing in the towel for a little while.
+            //i'll be back here soon(tm)
+            Plugin.PluginLog.Verbose($"setting actionmanager areaTargetingExecuteAtObject to {objectId}");
             actionManager->AreaTargetingExecuteAtObject = objectId;
+            Plugin.PluginLog.Verbose($"setting actionmanager AreaTargetingExecuteAtCursor to true");
             actionManager->AreaTargetingExecuteAtCursor = true;
         }
 
+        Plugin.PluginLog.Verbose("finishing MoActionHook");
         return ret;
     }
 
