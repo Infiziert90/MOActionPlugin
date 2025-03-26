@@ -72,8 +72,7 @@ public class MOAction
 
         // Enqueue GT action
         var actionManager = ActionManager.Instance();
-        if (action.TargetArea)
-        {
+        if (action.TargetArea){
             Plugin.PluginLog.Verbose($"setting actionmanager areaTargetingExecuteAtObject to {objectId}");
             actionManager->AreaTargetingExecuteAtObject = objectId;
             Plugin.PluginLog.Verbose($"setting actionmanager AreaTargetingExecuteAtCursor to true");
@@ -86,7 +85,7 @@ public class MOAction
 
     private unsafe (Lumina.Excel.Sheets.Action action, IGameObject target) GetActionTarget(uint actionID, ActionType actionType)
     {
-        if(!Sheets.ActionSheet.TryGetRow(actionID,out var action)){
+        if(!Sheets.ActionSheet.TryGetRow(actionID, out var action)){
             Plugin.PluginLog.Verbose("ILLEGAL STATE: Lumina Excel did not succesfully retrieve row.\nFailsafe triggering early return");
             return (default, null);
         }
@@ -205,35 +204,21 @@ public class MOAction
         return (gameCanUseActionResponse, target);
     }
 
-    public unsafe IGameObject GetGuiMoPtr()
-    {
-        return Plugin.Objects.CreateObjectReference((nint)PronounModule.Instance()->UiMouseOverTarget);
-    }
+    public unsafe IGameObject GetGuiMoPtr() =>
+        Plugin.Objects.CreateObjectReference((nint)PronounModule.Instance()->UiMouseOverTarget);
 
-    public IGameObject GetFieldMo()
-    {
-        return Plugin.TargetManager.MouseOverTarget;
-    }
+    public IGameObject GetFieldMo() =>
+        Plugin.TargetManager.MouseOverTarget;
 
-    public unsafe IGameObject GetActorFromPlaceholder(string placeholder)
-    {
-        return Plugin.Objects.CreateObjectReference((nint)PronounModule.Instance()->ResolvePlaceholder(placeholder, 1, 0));
-    }
+    public unsafe IGameObject GetActorFromPlaceholder(string placeholder) =>
+        Plugin.Objects.CreateObjectReference((nint)PronounModule.Instance()->ResolvePlaceholder(placeholder, 1, 0));
 
-    public unsafe IGameObject GetActorFromCrosshairLocation()
-    {
-       return Plugin.Objects.CreateObjectReference((nint)TargetSystem.Instance()->GetMouseOverObject(Plugin.Configuration.CrosshairWidth,Plugin.Configuration.CrosshairHeight));
-    }
 
-    private static bool VerifyJobEqualsOrEqualsParentJob(uint job, uint LocalPlayerRowID){
-        if(LocalPlayerRowID == job){
-            return true;
-        }
-        if(Sheets.ClassJobSheet.TryGetRow(job, out var classjob)){
-           if(LocalPlayerRowID == classjob.ClassJobParent.RowId){
-            return true;
-           }
-        }
-        return false;
-    }
+    public unsafe IGameObject GetActorFromCrosshairLocation() =>
+    Plugin.Objects.CreateObjectReference((nint)TargetSystem.Instance()->GetMouseOverObject(Plugin.Configuration.CrosshairWidth,Plugin.Configuration.CrosshairHeight));
+
+
+    public static bool VerifyJobEqualsOrEqualsParentJob(uint job, uint LocalPlayerRowID) =>
+    LocalPlayerRowID == job || (Sheets.ClassJobSheet.TryGetRow(job, out var classjob) && LocalPlayerRowID == classjob.ClassJobParent.RowId);
+
 }
