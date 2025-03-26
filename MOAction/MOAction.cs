@@ -72,7 +72,8 @@ public class MOAction
 
         // Enqueue GT action
         var actionManager = ActionManager.Instance();
-        if (action.TargetArea){
+        if (action.TargetArea)
+        {
             Plugin.PluginLog.Verbose($"setting actionmanager areaTargetingExecuteAtObject to {objectId}");
             actionManager->AreaTargetingExecuteAtObject = objectId;
             Plugin.PluginLog.Verbose($"setting actionmanager AreaTargetingExecuteAtCursor to true");
@@ -85,22 +86,26 @@ public class MOAction
 
     private unsafe (Lumina.Excel.Sheets.Action action, IGameObject target) GetActionTarget(uint actionID, ActionType actionType)
     {
-        if(!Sheets.ActionSheet.TryGetRow(actionID, out var action)){
+        if (!Sheets.ActionSheet.TryGetRow(actionID, out var action))
+        {
             Plugin.PluginLog.Verbose("ILLEGAL STATE: Lumina Excel did not succesfully retrieve row.\nFailsafe triggering early return");
             return (default, null);
         }
 
-        if (action.RowId == 0){
+        if (action.RowId == 0)
+        {
             Plugin.PluginLog.Verbose("ILLEGAL STATE: Lumina Excel returned default row.\nFailsafe triggering early return");
             return (default, null);
         }
 
-        if (Plugin.ClientState.LocalPlayer == null){
+        if (Plugin.ClientState.LocalPlayer == null)
+        {
             Plugin.PluginLog.Verbose("ILLEGAL STATE: Dalamud has no reference to LocalPlayer.\nFailsafe triggering early return");
             return (default, null);
         }
 
-        if(Plugin.ClientState.LocalPlayer.ClassJob.RowId ==0){
+        if (Plugin.ClientState.LocalPlayer.ClassJob.RowId == 0)
+        {
             Plugin.PluginLog.Verbose("ILLEGAL STATE: Dalamud thinks you're an ADV\nFailsafe triggering early return");
             return (default, null);
         }
@@ -108,10 +113,10 @@ public class MOAction
         var actionManager = ActionManager.Instance();
         var adjusted = actionManager->GetAdjustedActionId(actionID);
 
-        var applicableActions = Stacks.Where(entry => 
+        var applicableActions = Stacks.Where(entry =>
             (entry.BaseAction.RowId == action.RowId ||
             entry.BaseAction.RowId == adjusted ||
-            actionManager->GetAdjustedActionId(entry.BaseAction.RowId) == adjusted) 
+            actionManager->GetAdjustedActionId(entry.BaseAction.RowId) == adjusted)
             && VerifyJobEqualsOrEqualsParentJob(entry.Job, Plugin.ClientState.LocalPlayer.ClassJob.RowId)
             );
 
@@ -215,7 +220,7 @@ public class MOAction
 
 
     public unsafe IGameObject GetActorFromCrosshairLocation() =>
-    Plugin.Objects.CreateObjectReference((nint)TargetSystem.Instance()->GetMouseOverObject(Plugin.Configuration.CrosshairWidth,Plugin.Configuration.CrosshairHeight));
+        Plugin.Objects.CreateObjectReference((nint)TargetSystem.Instance()->GetMouseOverObject(Plugin.Configuration.CrosshairWidth, Plugin.Configuration.CrosshairHeight));
 
 
     public static bool VerifyJobEqualsOrEqualsParentJob(uint job, uint LocalPlayerRowID) =>
