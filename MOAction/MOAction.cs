@@ -30,11 +30,12 @@ public class MOAction
 
     public unsafe void Enable()
     {
-        //read current bytes at GtQueuePatch for Dispose
-        SafeMemory.ReadBytes(Address.GtQueuePatch, 2, out var prePatch);
+        // read current bytes at GtQueuePatch for Dispose
+        SafeMemory.ReadBytes(Address.GtQueuePatch, 3, out var prePatch);
         Address.PreGtQueuePatchData = prePatch;
 
-        SafeMemory.WriteBytes(Address.GtQueuePatch, [0x90, 0x90]);
+        //writing a AL operator to overwrite existing XOR operator
+        SafeMemory.WriteBytes(Address.GtQueuePatch, [0x90, 0x32, 0xC0]);
 
         RequestActionHook = Plugin.HookProvider.HookFromAddress<ActionManager.Delegates.UseAction>(ActionManager.MemberFunctionPointers.UseAction, HandleRequestAction);
         RequestActionHook.Enable();
@@ -67,33 +68,57 @@ public class MOAction
 
         var ret = RequestActionHook.Original(thisPtr, actionType, action.RowId, objectId, extraParam, mode, comboRouteId, outOptAreaTargeted);
 
+        Plugin.PluginLog.Verbose($"Executed Action {action.Name.ExtractText()} with ActionID {action.RowId} on object with ObjectId {objectId}, response: {ret}");
+
         // Enqueue GT action
         var actionManager = ActionManager.Instance();
         if (action.TargetArea)
         {
+            Plugin.PluginLog.Verbose($"setting actionmanager areaTargetingExecuteAtObject to {objectId}");
             actionManager->AreaTargetingExecuteAtObject = objectId;
+            Plugin.PluginLog.Verbose($"setting actionmanager AreaTargetingExecuteAtCursor to true");
             actionManager->AreaTargetingExecuteAtCursor = true;
         }
 
+        Plugin.PluginLog.Verbose("finishing MoActionHook");
         return ret;
     }
 
     private unsafe (Lumina.Excel.Sheets.Action action, IGameObject target) GetActionTarget(uint actionID, ActionType actionType)
     {
-        var action = Sheets.ActionSheet.GetRow(actionID);
+        if (!Sheets.ActionSheet.TryGetRow(actionID, out var action))
+        {
+            Plugin.PluginLog.Verbose("ILLEGAL STATE: Lumina Excel did not succesfully retrieve row.\nFailsafe triggering early return");
+            return (default, null);
+        }
+
+        if (action.RowId == 0)
+        {
+            Plugin.PluginLog.Verbose("ILLEGAL STATE: Lumina Excel returned default row.\nFailsafe triggering early return");
+            return (default, null);
+        }
+
+        if (Plugin.ClientState.LocalPlayer == null)
+        {
+            Plugin.PluginLog.Verbose("ILLEGAL STATE: Dalamud has no reference to LocalPlayer.\nFailsafe triggering early return");
+            return (default, null);
+        }
+
+        if (Plugin.ClientState.LocalPlayer.ClassJob.RowId == 0)
+        {
+            Plugin.PluginLog.Verbose("ILLEGAL STATE: Dalamud thinks you're an ADV\nFailsafe triggering early return");
+            return (default, null);
+        }
 
         var actionManager = ActionManager.Instance();
         var adjusted = actionManager->GetAdjustedActionId(actionID);
-        if (action.RowId == 0)
-            return (default, null);
 
-        if (Plugin.ClientState.LocalPlayer == null)
-            return (default, null);
-
-        var applicableActions = Stacks.Where(entry => (
-            entry.BaseAction.RowId == action.RowId || entry.BaseAction.RowId == adjusted ||
-            actionManager->GetAdjustedActionId(entry.BaseAction.RowId) == adjusted) &&
-            (Plugin.ClientState.LocalPlayer.ClassJob.RowId == entry.Job || Plugin.ClientState.LocalPlayer.ClassJob.RowId == Sheets.ClassJobSheet.GetRow(entry.Job).ClassJobParent.RowId));
+        var applicableActions = Stacks.Where(entry =>
+            (entry.BaseAction.RowId == action.RowId ||
+            entry.BaseAction.RowId == adjusted ||
+            actionManager->GetAdjustedActionId(entry.BaseAction.RowId) == adjusted)
+            && VerifyJobEqualsOrEqualsParentJob(entry.Job, Plugin.ClientState.LocalPlayer.ClassJob.RowId)
+            );
 
         MoActionStack stackToUse = null;
         foreach (var entry in applicableActions)
@@ -184,23 +209,21 @@ public class MOAction
         return (gameCanUseActionResponse, target);
     }
 
-    public unsafe IGameObject GetGuiMoPtr()
-    {
-        return Plugin.Objects.CreateObjectReference((nint)PronounModule.Instance()->UiMouseOverTarget);
-    }
+    public unsafe IGameObject GetGuiMoPtr() =>
+        Plugin.Objects.CreateObjectReference((nint)PronounModule.Instance()->UiMouseOverTarget);
 
-    public IGameObject GetFieldMo()
-    {
-        return Plugin.TargetManager.MouseOverTarget;
-    }
+    public IGameObject GetFieldMo() =>
+        Plugin.TargetManager.MouseOverTarget;
 
-    public unsafe IGameObject GetActorFromPlaceholder(string placeholder)
-    {
-        return Plugin.Objects.CreateObjectReference((nint)PronounModule.Instance()->ResolvePlaceholder(placeholder, 1, 0));
-    }
+    public unsafe IGameObject GetActorFromPlaceholder(string placeholder) =>
+        Plugin.Objects.CreateObjectReference((nint)PronounModule.Instance()->ResolvePlaceholder(placeholder, 1, 0));
 
-    public unsafe IGameObject GetActorFromCrosshairLocation()
-    {
-       return Plugin.Objects.CreateObjectReference((nint)TargetSystem.Instance()->GetMouseOverObject(Plugin.Configuration.CrosshairWidth,Plugin.Configuration.CrosshairHeight));
-    }
+
+    public unsafe IGameObject GetActorFromCrosshairLocation() =>
+        Plugin.Objects.CreateObjectReference((nint)TargetSystem.Instance()->GetMouseOverObject(Plugin.Configuration.CrosshairWidth, Plugin.Configuration.CrosshairHeight));
+
+
+    public static bool VerifyJobEqualsOrEqualsParentJob(uint job, uint LocalPlayerRowID) =>
+    LocalPlayerRowID == job || (Sheets.ClassJobSheet.TryGetRow(job, out var classjob) && LocalPlayerRowID == classjob.ClassJobParent.RowId);
+
 }
