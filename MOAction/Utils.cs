@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Runtime.CompilerServices;
 using Lumina.Excel.Sheets;
+using MOAction.Configuration;
 
 namespace MOAction;
 
@@ -25,15 +26,15 @@ public static class Utils
     }
 }
 
-public class ActionComparer : IEqualityComparer<Action>
+public class ActionWrapperComparer : IEqualityComparer<MOActionWrapper>
 {
-    bool IEqualityComparer<Action>.Equals(Action x, Action y)
+    bool IEqualityComparer<MOActionWrapper>.Equals(MOActionWrapper x, MOActionWrapper y)
     {
-        return x.RowId == y.RowId;
+        return x.RowId() == y.RowId() && x.actionType == y.actionType;
     }
 
-    int IEqualityComparer<Action>.GetHashCode(Action obj)
+    int IEqualityComparer<MOActionWrapper>.GetHashCode(MOActionWrapper obj)
     {
-        return obj.RowId.GetHashCode();
+        return obj.RowId().GetHashCode();
     }
 }
