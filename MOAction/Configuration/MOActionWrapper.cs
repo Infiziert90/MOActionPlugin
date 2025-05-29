@@ -1,74 +1,64 @@
 namespace MOAction.Configuration;
-using System;
 using FFXIVClientStructs.FFXIV.Client.Game;
-using Lumina.Excel;
 using Lumina.Excel.Sheets;
 
+/// <summary>
+/// Helper wrapper class to be able to act on an Action or GeneralAction in an identical fashion.
+/// </summary>
 public class MOActionWrapper
 {
-    public Lumina.Excel.Sheets.Action? Action { get; private set; } = null;
-    public Lumina.Excel.Sheets.GeneralAction? GeneralAction { get; private set; } = null;
+    private Action? Action { get; }
+    private GeneralAction? GeneralAction { get; }
 
     public ActionType actionType { get; private set; }
 
-    public MOActionWrapper(Lumina.Excel.Sheets.Action action)
+    public MOActionWrapper(Action action)
     {
-        this.Action = action;
-        this.actionType = ActionType.Action;
+        Action = action;
+        actionType = ActionType.Action;
     }
 
-    public MOActionWrapper(Lumina.Excel.Sheets.GeneralAction generalAction)
+    public MOActionWrapper(GeneralAction generalAction)
     {
-        this.GeneralAction = generalAction;
-        this.actionType = ActionType.GeneralAction;
+        GeneralAction = generalAction;
+        actionType = ActionType.GeneralAction;
     }
 
     public MOActionWrapper()
     {
-        this.actionType = ActionType.None;
+        actionType = ActionType.None;
     }
 
     public uint RowId()
     {
         if (Action != null)
-        {
             return Action!.Value.RowId;
-        }
         if (GeneralAction != null)
-        {
             return GeneralAction!.Value.RowId;
-        }
-        return default;
+        return 0;
     }
 
     public bool TargetArea()
     {
         if (Action != null)
-        {
             return Action.Value.TargetArea;
-        }
+
         return false;
     }
 
     public string Name()
     {
         if (Action != null)
-        {
             return Action!.Value.Name.ExtractText();
-        }
         if (GeneralAction != null)
-        {
             return GeneralAction!.Value.Name.ExtractText();
-        }
         return string.Empty;
     }
 
     public string ClassJobCategory()
     {
         if (Action != null)
-        {
             return Action!.Value.ClassJobCategory.Value.Name.ExtractText();
-        }
         return string.Empty;
     }
 }

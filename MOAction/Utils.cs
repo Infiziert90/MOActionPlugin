@@ -26,27 +26,32 @@ public static class Utils
         (list[i], list[j]) = (list[j], list[i]);
     }
 
-    public static unsafe bool getActionFromGeneralDutyAction(GeneralAction generalAction, out Action action)
+    /// <summary>
+    /// Grabs whatever actionId is currently inside the duty action slot with index 0-4
+    /// </summary>
+    /// <param name="rowId">the rowId of the general actions used as placeholder, ranging from 31 to 35</param>
+    /// <param name="action">out parameter, the duty action</param>
+    /// <returns>success or not</returns>
+    public static unsafe bool GetDutyActionRow(uint rowId, out Action action)
     {
         var actionManager = ActionManager.Instance();
-        uint id = 0;
-        if (generalAction.RowId == 26)
+        if (rowId is < 30 or > 36)
         {
-            id = DutyActionManager.GetDutyActionId(0);
+                action = default;
+                return false;
         }
-        else if (generalAction.RowId == 27)
+        //Phantom actions are 31-35, so to get slot 0-4 from 31-35
+        var dutyActionSlot = rowId - 31;
+        var id = DutyActionManager.GetDutyActionId((ushort)dutyActionSlot);
+
+        if (id > 0)
         {
-            id = DutyActionManager.GetDutyActionId(1);
+            Plugin.PluginLog.Verbose($"Duty Action with rowID {id} selected from duty action slot {dutyActionSlot}");
+            return Sheets.ActionSheet.TryGetRow(actionManager->GetAdjustedActionId(id), out action);
         }
 
-        if (id == 0)
-        {
-            action = default;
-            return false;
-        }
-
-        return Sheets.ActionSheet.TryGetRow(actionManager->GetAdjustedActionId(id), out action);
-
+        action = default;
+        return false;
     }
 }
 
