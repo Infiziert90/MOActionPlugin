@@ -52,6 +52,9 @@ public class MOAction
         }
     }
 
+    /// <summary>
+    /// Main hooked function for the Mouse over action plugin, it intercepts the requested action
+    /// </summary>
     private unsafe bool HandleRequestAction(ActionManager* thisPtr, ActionType actionType, uint actionId, ulong targetId, uint extraParam, ActionManager.UseActionMode mode, uint comboRouteId, bool* outOptAreaTargeted)
     {
         // Only care about "real" actions. Not doing anything dodgy
@@ -84,9 +87,14 @@ public class MOAction
         return ret;
     }
 
-    private unsafe (Lumina.Excel.Sheets.Action action, IGameObject target) GetActionTarget(uint actionID, ActionType actionType)
+    /// <summary>
+    ///  gets the target and the action to use.
+    /// </summary>
+    /// <param name="actionId">the action id being handled</param>
+    /// <param name="actionType">action type is only used in the off-cooldown check, should always be "Action"</param>
+    private unsafe (Lumina.Excel.Sheets.Action action, IGameObject target) GetActionTarget(uint actionId, ActionType actionType)
     {
-        if (!Sheets.ActionSheet.TryGetRow(actionID, out var action))
+        if (!Sheets.ActionSheet.TryGetRow(actionId, out var action))
         {
             Plugin.PluginLog.Verbose("ILLEGAL STATE: Lumina Excel did not succesfully retrieve row.\nFailsafe triggering early return");
             return (default, null);
@@ -109,16 +117,43 @@ public class MOAction
             Plugin.PluginLog.Verbose("ILLEGAL STATE: Dalamud thinks you're an ADV\nFailsafe triggering early return");
             return (default, null);
         }
-
         var actionManager = ActionManager.Instance();
-        var adjusted = actionManager->GetAdjustedActionId(actionID);
+        var adjusted = actionManager->GetAdjustedActionId(actionId);
 
-        var applicableActions = Stacks.Where(entry =>
-            (entry.BaseAction.RowId == action.RowId ||
-            entry.BaseAction.RowId == adjusted ||
-            actionManager->GetAdjustedActionId(entry.BaseAction.RowId) == adjusted)
-            && VerifyJobEqualsOrEqualsParentJob(entry.Job, Plugin.ClientState.LocalPlayer.ClassJob.RowId)
+        //Loop through Duty actions 0 -> slots of duty actions
+        //NumValidSlots is at most 4, this is in Occult Cresent
+        var applicableActions = Enumerable.Empty<MoActionStack>();
+        var isDutyAction = false;
+        var dutyActionManager = DutyActionManager.GetInstanceIfReady();
+        if (dutyActionManager != null)
+        {
+            for (ushort dutyActionSlot = 0; dutyActionSlot < dutyActionManager->NumValidSlots; dutyActionSlot++)
+            {
+                if (action.RowId != DutyActionManager.GetDutyActionId(dutyActionSlot))
+                    continue;
+
+                Plugin.PluginLog.Verbose("We're dealing with a duty action");
+                isDutyAction = true;
+                //Fetch the stacks we linked to phantom actions 1-5 to match between duty actions 0-4
+                applicableActions = Stacks.Where(entry =>
+                    entry.BaseAction.actionType == ActionType.GeneralAction &&
+                    entry.BaseAction.RowId() == 31 + dutyActionSlot);
+                break;
+            }
+        }
+
+        if (!isDutyAction)
+        {
+            applicableActions = Stacks.Where(entry =>
+                entry.BaseAction.actionType == ActionType.Action &&
+                (
+                    entry.BaseAction.RowId() == action.RowId ||
+                    entry.BaseAction.RowId() == adjusted ||
+                    actionManager->GetAdjustedActionId(entry.BaseAction.RowId()) == adjusted
+                )
+                && VerifyJobEqualsOrEqualsParentJob(entry.Job, Plugin.ClientState.LocalPlayer.ClassJob.RowId)
             );
+        }
 
         MoActionStack stackToUse = null;
         foreach (var entry in applicableActions)
@@ -142,34 +177,56 @@ public class MOAction
 
         foreach (var entry in stackToUse.Entries)
         {
-            Plugin.PluginLog.Verbose($"unadjusted entry action, {entry.Action.RowId}, {entry.Action.Name.ExtractText()}");
-            var (response, target) = CanUseAction(entry, actionType);
-            if (response)
-                return (entry.Action, target);
+            Plugin.PluginLog.Verbose($"unadjusted entry action, {entry.Action.RowId()}, {entry.Action.Name()}");
+            if (CanUseAction(entry, actionType, out var target, out var usedAction))
+            {
+                return (usedAction, target);
+            }
         }
 
         Plugin.PluginLog.Verbose("Chosen MoAction Entry stack did not have any usable actions.");
         return (default, null);
     }
 
-    private unsafe (bool, IGameObject Target) CanUseAction(StackEntry targ, ActionType actionType)
+    /// <summary>
+    /// Figures out if you are able to cast the action inside stackentry at the target inside the stack entry.
+    /// </summary>
+    /// <param name="stackentry">stack entry to be checked</param>
+    /// <param name="actionType">used for the cooldown check, should always be "Action"</param>
+    /// <param name="target">out parameter, the target to return to the hook to fire the spell at</param>
+    /// <param name="action">out parameter, the spell to return to the hook to fire at the target</param>
+    private unsafe bool CanUseAction(StackEntry stackentry, ActionType actionType, out IGameObject target, out Lumina.Excel.Sheets.Action action)
     {
-        if (targ.Target == null || targ.Action.RowId == 0 || Plugin.ClientState.LocalPlayer == null)
-            return (false, null);
-
+        target = stackentry.Target.GetTarget();
+        var id = stackentry.Action.RowId();
+        //Early sanity checks
+        if (stackentry.Target == null || id == 0 || Plugin.ClientState.LocalPlayer == null || stackentry.Action.actionType is not (ActionType.GeneralAction or ActionType.Action))
+        {
+            action = default;
+            return false;
+        }
         var actionManager = ActionManager.Instance();
-        if (!Sheets.ActionSheet.TryGetRow(actionManager->GetAdjustedActionId(targ.Action.RowId), out var action))
-            return (false, null); // just in case
+        //assign the out action to the action to be checked if can be used
+        if (stackentry.Action.actionType == ActionType.Action)
+        {
+            if (!Sheets.ActionSheet.TryGetRow(actionManager->GetAdjustedActionId(id), out action))
+                return false; // just in case
+        }
+        else
+        {
+            if (!Utils.GetDutyActionRow(id, out action))
+                return false;
+        }
 
-        var target = targ.Target.GetTarget();
+        //if there's no target, return false unless it is a ground target action at mousepoint.
         if (target == null)
-            return targ.Target.ObjectNeeded ? (false, Plugin.ClientState.LocalPlayer) : (true, null);
+            return !stackentry.Target.ObjectNeeded;
 
         // Check if ability is on CD or not (charges are fun!)
         var abilityOnCoolDownResponse = actionManager->IsActionOffCooldown(actionType, action.RowId);
         Plugin.PluginLog.Verbose($"Is {action.Name.ExtractText()} off cooldown? : {abilityOnCoolDownResponse}");
         if (!abilityOnCoolDownResponse)
-            return (false, target);
+            return false;
 
         var player = Plugin.ClientState.LocalPlayer;
         var targetPtr = (FFXIVClientStructs.FFXIV.Client.Game.Object.GameObject*)target.Address;
@@ -178,9 +235,9 @@ public class MOAction
             var playerPtr = (FFXIVClientStructs.FFXIV.Client.Game.Object.GameObject*)player.Address;
             var err = ActionManager.GetActionInRangeOrLoS(action.RowId, playerPtr, targetPtr);
             if (action.TargetArea)
-                return (true, target);
+                return false;
             if (err != 0 && err != 565)
-                return (false, target);
+                return false;
         }
 
         Plugin.PluginLog.Verbose($"Is {action.Name.ExtractText()} a role action?: {action.IsRoleAction}");
@@ -188,12 +245,12 @@ public class MOAction
         {
             Plugin.PluginLog.Verbose($"Is {action.Name.ExtractText()} usable at level: {action.ClassJobLevel} available for player {player.Name} with {player.Level}?");
             if (action.ClassJobLevel > Plugin.ClientState.LocalPlayer.Level)
-                return (false, target);
+                return false;
         }
 
         Plugin.PluginLog.Verbose($"Is {action.Name.ExtractText()} a area spell/ability? {action.TargetArea}");
         if (action.TargetArea)
-            return (true, target);
+            return true;
 
         var selfOnlyTargetAction = !action.CanTargetAlly && !action.CanTargetHostile && !action.CanTargetParty;
         Plugin.PluginLog.Verbose($"Can {action.Name.ExtractText()} target: friendly - {action.CanTargetAlly}, hostile  - {action.CanTargetHostile}, party  - {action.CanTargetParty}, dead - {action.DeadTargetBehaviour == 0}, self - {action.CanTargetSelf}");
@@ -205,8 +262,7 @@ public class MOAction
 
         var gameCanUseActionResponse = ActionManager.CanUseActionOnTarget(action.RowId, (FFXIVClientStructs.FFXIV.Client.Game.Object.GameObject*)target.Address);
         Plugin.PluginLog.Verbose($"Can I use action: {action.RowId} with name {action.Name.ExtractText()} on target {target.DataId} with name {target.Name} : {gameCanUseActionResponse}");
-
-        return (gameCanUseActionResponse, target);
+        return gameCanUseActionResponse;
     }
 
     public unsafe IGameObject GetGuiMoPtr() =>
