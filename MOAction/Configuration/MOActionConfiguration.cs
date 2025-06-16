@@ -20,6 +20,7 @@ public class MOActionConfiguration : IPluginConfiguration
     public Vector4 CrosshairInvalidColor = ImGuiColors.DalamudRed;
     public Vector4 CrosshairValidColor = ImGuiColors.DalamudOrange;
     public Vector4 CrosshairCastColor = ImGuiColors.ParsedGreen;
+    public bool IncludeDutyActions = true;
 
     public bool RangeCheck;
 

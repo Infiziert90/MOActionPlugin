@@ -85,8 +85,11 @@ public partial class ConfigWindow : Window, IDisposable
     {
         try
         {
-            var tempStacks = Plugin.SortStacks(Plugin.RebuildStacks(JsonConvert.DeserializeObject<List<ConfigurationEntry>>(Encoding.UTF8.GetString(Convert.FromBase64String(import)))));
-            //TODO maybe write those 2 information pluginlogs to the chatlog as dalamud informational text?
+            var importString = Encoding.UTF8.GetString(Convert.FromBase64String(import));
+            Plugin.PluginLog.Verbose($"import: {importString}");
+            var jsonDeserializeObject = JsonConvert.DeserializeObject<List<ConfigurationEntry>>(importString);
+            Plugin.PluginLog.Verbose($"jsonDeserializedObject: {JsonConvert.SerializeObject(jsonDeserializeObject)}");
+            var tempStacks = Plugin.SortStacks(Plugin.RebuildStacks(jsonDeserializeObject));
             Plugin.PluginLog.Information("Imported stacks on base actions will never overwrite existing stacks and are thus not imported.");
             Plugin.Ichatgui.Print("Imported stacks on base actions will never overwrite existing stacks and are thus not imported.", "MoAction", 0x1F);
             foreach (var (classjob, v) in tempStacks)
