@@ -4,11 +4,13 @@
         "Stack": [
             {
                 "Item1": "UI Mouseover",
-                "Item2": 190
+                "Item2": 190,
+                "Item3": 1
             },
             {
                 "Item1": "Target",
-                "Item2": 190
+                "Item2": 190,
+                "Item3": 1
             }
         ],
         "Modifier": 0,
@@ -19,11 +21,13 @@
         "Stack": [
             {
                 "Item1": "UI Mouseover",
-                "Item2": 173
+                "Item2": 173,
+                "Item3": 1
             },
             {
                 "Item1": "Target",
-                "Item2": 173
+                "Item2": 173,
+                "Item3": 1
             }
         ],
         "Modifier": 0,
@@ -34,11 +38,13 @@
         "Stack": [
             {
                 "Item1": "UI Mouseover",
-                "Item2": 185
+                "Item2": 185,
+                "Item3": 1
             },
             {
                 "Item1": "Target",
-                "Item2": 185
+                "Item2": 185,
+                "Item3": 1
             }
         ],
         "Modifier": 0,
@@ -49,11 +55,13 @@
         "Stack": [
             {
                 "Item1": "UI Mouseover",
-                "Item2": 189
+                "Item2": 189,
+                "Item3": 1
             },
             {
                 "Item1": "Target",
-                "Item2": 189
+                "Item2": 189,
+                "Item3": 1
             }
         ],
         "Modifier": 0,
@@ -64,7 +72,8 @@
         "Stack": [
             {
                 "Item1": "Target",
-                "Item2": 188
+                "Item2": 188,
+                "Item3": 1
             }
         ],
         "Modifier": 0,
@@ -75,11 +84,13 @@
         "Stack": [
             {
                 "Item1": "UI Mouseover",
-                "Item2": 3585
+                "Item2": 3585,
+                "Item3": 1
             },
             {
                 "Item1": "Target",
-                "Item2": 3585
+                "Item2": 3585,
+                "Item3": 1
             }
         ],
         "Modifier": 0,
@@ -90,11 +101,13 @@
         "Stack": [
             {
                 "Item1": "UI Mouseover",
-                "Item2": 7434
+                "Item2": 7434,
+                "Item3": 1
             },
             {
                 "Item1": "Target",
-                "Item2": 7434
+                "Item2": 7434,
+                "Item3": 1
             }
         ],
         "Modifier": 0,
@@ -105,11 +118,13 @@
         "Stack": [
             {
                 "Item1": "UI Mouseover",
-                "Item2": 7437
+                "Item2": 7437,
+                "Item3": 1
             },
             {
                 "Item1": "Target",
-                "Item2": 7437
+                "Item2": 7437,
+                "Item3": 1
             }
         ],
         "Modifier": 0,
@@ -120,11 +135,13 @@
         "Stack": [
             {
                 "Item1": "UI Mouseover",
-                "Item2": 25867
+                "Item2": 25867,
+                "Item3": 1
             },
             {
                 "Item1": "Target",
-                "Item2": 25867
+                "Item2": 25867,
+                "Item3": 1
             }
         ],
         "Modifier": 0,
