@@ -16,6 +16,8 @@ using Dalamud.IoC;
 using MOAction.Windows;
 using MOAction.Windows.Config;
 
+using Action = Lumina.Excel.Sheets.Action;
+
 namespace MOAction;
 
 public class Plugin : IDalamudPlugin
@@ -39,7 +41,7 @@ public class Plugin : IDalamudPlugin
     public ConfigWindow ConfigWindow { get; }
 
     public readonly MOAction MoAction;
-    private List<MOActionWrapper> ApplicableActions;
+    private List<Action> ApplicableActions;
 
     public readonly List<TargetType> TargetTypes;
     public readonly TargetType GroundTargetTypes;
@@ -47,10 +49,7 @@ public class Plugin : IDalamudPlugin
     public readonly Dictionary<uint, HashSet<MoActionStack>> SavedStacks = [];
     public readonly Dictionary<uint, List<MoActionStack>> SortedStacks = [];
     public readonly List<Lumina.Excel.Sheets.ClassJob> JobAbbreviations;
-    public Dictionary<uint, List<MOActionWrapper>> JobActions = [];
-
-    //26/27 are duty actions, 31-35 are phantom skills, phantom skills not yet implemented
-    public static readonly uint[] dutyActionRowIds = [26, 27, 31, 32, 33, 34, 35];
+    public readonly Dictionary<uint, List<Action>> JobActions = [];
 
     public Plugin()
     {
@@ -69,9 +68,19 @@ public class Plugin : IDalamudPlugin
             HelpMessage = "Alias for /pmoaction.",
             ShowInHelp = true
         });
-        var config = PluginInterface.GetPluginConfig() as MOActionConfiguration ?? new MOActionConfiguration();
+
+        JobAbbreviations = Sheets.ClassJobSheet.Where(x => x.JobIndex > 0).OrderBy(c => c.Abbreviation.ExtractText()).ToList();
+        ApplicableActions = Sheets.ActionSheet.Where(row => row is { IsPlayerAction: true, IsPvP: false, ClassJobLevel: > 0 }).Where(a => a.RowId != 212).ToList();
+
+        SortActions();
         MoAction = new MOAction(this);
-        JobAbbreviations = [.. Sheets.ClassJobSheet.Where(x => x.JobIndex > 0).OrderBy(c => c.Abbreviation.ExtractText())];
+
+        foreach (var availableJobs in JobAbbreviations)
+            JobActions.Add(availableJobs.RowId, ApplicableActions.Where(action =>
+            {
+                var names = action.ClassJobCategory.Value.Name.ExtractText();
+                return names.Contains(availableJobs.Name.ExtractText()) || names.Contains(availableJobs.Abbreviation.ExtractText());
+            }).ToList());
 
         TargetTypes =
         [
@@ -93,6 +102,7 @@ public class Plugin : IDalamudPlugin
 
         GroundTargetTypes = new EntityTarget(() => null, "Mouse Location", false);
 
+        var config = PluginInterface.GetPluginConfig() as MOActionConfiguration ?? new MOActionConfiguration();
         foreach (var entry in config.Stacks.ToArray())
         {
             if (entry.JobIdx == 0)
@@ -101,9 +111,8 @@ public class Plugin : IDalamudPlugin
             if (!Sheets.ClassJobSheet.TryGetRow(entry.JobIdx, out var row) || row.RowId == 0)
                 config.Stacks.Remove(entry);
         }
-        Configuration = config;
-        InitUsableActions();
 
+        Configuration = config;
         SavedStacks = SortStacks(RebuildStacks(Configuration.Stacks));
         foreach (var (k, v) in SavedStacks)
         {
@@ -160,7 +169,7 @@ public class Plugin : IDalamudPlugin
         {
             var jobstack = list.Where(s => s.Job == c.RowId).ToList();
             if (jobstack.Count > 0)
-                toReturn[c.RowId] = [.. jobstack];
+                toReturn[c.RowId] = [..jobstack];
             else
                 toReturn[c.RowId] = [];
         }
@@ -177,7 +186,7 @@ public class Plugin : IDalamudPlugin
 
         Configuration.Stacks.Clear();
         foreach (var x in MoAction.Stacks)
-            Configuration.Stacks.Add(new ConfigurationEntry(x.BaseAction.RowId(), [.. x.Entries.Select(y => (y.Target.TargetName, y.Action.RowId(), y.Action.actionType))], x.Modifier, x.Job, x.BaseAction.actionType));
+            Configuration.Stacks.Add(new ConfigurationEntry(x.BaseAction.RowId, x.Entries.Select(y => (y.Target.TargetName, y.Action.RowId)).ToList(), x.Modifier, x.Job));
 
         PluginInterface.SavePluginConfig(Configuration);
     }
@@ -204,8 +213,8 @@ public class Plugin : IDalamudPlugin
         var toReturn = new List<MoActionStack>();
         foreach (var entry in configurationEntries)
         {
-            var action = ApplicableActions.FirstOrDefault(x => x.RowId() == entry.BaseId && x.actionType == entry.ActionType);
-            if (action == null || action.RowId() == 0)
+            var action = ApplicableActions.FirstOrDefault(x => x.RowId == entry.BaseId);
+            if (action.RowId == 0)
                 continue;
 
             var job = entry.JobIdx;
@@ -213,20 +222,18 @@ public class Plugin : IDalamudPlugin
             foreach (var stackEntry in entry.Stack)
             {
                 var targ = TargetTypes.FirstOrDefault(x => x.TargetName == stackEntry.Item1) ?? GroundTargetTypes;
-                var action1 = ApplicableActions.FirstOrDefault(x => x.RowId() == stackEntry.Item2 && x.actionType == stackEntry.Item3);
-                if (action1 == null || action1.RowId() == 0)
+                var action1 = ApplicableActions.FirstOrDefault(x => x.RowId == stackEntry.Item2);
+                if (action1.RowId == 0)
                     continue;
 
                 entries.Add(new StackEntry(action1, targ));
             }
-            if (entries.Count > 0)
+
+            toReturn.Add(new MoActionStack(action, entries)
             {
-                toReturn.Add(new MoActionStack(action, entries)
-                {
-                    Job = job,
-                    Modifier = entry.Modifier
-                });
-            }
+                Job = job,
+                Modifier = entry.Modifier
+            });
         }
 
         return toReturn;
@@ -255,40 +262,17 @@ public class Plugin : IDalamudPlugin
     private void SortActions()
     {
         // HashSet is to ensure actions are unique
-        var tmp = new HashSet<MOActionWrapper>(new ActionWrapperComparer());
-        foreach (var action in ApplicableActions)
-            tmp.Add(action);
-        ApplicableActions = [.. tmp.OrderBy(c => c.Name())];
-    }
-
-    public void InitUsableActions()
-    {
-        JobActions = [];
-        ApplicableActions = [.. Sheets.ActionSheet.Where(row => row is { IsPlayerAction: true, IsPvP: false, ClassJobLevel: > 0 }).Where(a => a.RowId != 212).Select(y => { return new MOActionWrapper(y); })];
-        if (Configuration.IncludeDutyActions)
+        var tmp = new HashSet<Action>(new ActionComparer());
+        foreach (var (name, abr) in JobAbbreviations.GetNames())
         {
-            foreach (uint dutyActionRowId in dutyActionRowIds)
+            foreach (var action in ApplicableActions)
             {
-                ApplicableActions.Add(new MOActionWrapper(Sheets.GeneralActions.GetRow(dutyActionRowId)));
+                var nameStr = action.ClassJobCategory.Value.Name.ExtractText();
+                if (nameStr.Contains(name) || nameStr.Contains(abr))
+                    tmp.Add(action);
             }
         }
-        SortActions();
 
-        foreach (var availableJobs in JobAbbreviations)
-        {
-            var availableActions = ApplicableActions.Where(action =>
-            {
-                var names = action.ClassJobCategory();
-                return names.Contains(availableJobs.Name.ExtractText()) || names.Contains(availableJobs.Abbreviation.ExtractText());
-            }).ToList();
-            if (Configuration.IncludeDutyActions)
-            {
-                foreach (uint dutyActionRowId in dutyActionRowIds)
-                {
-                    availableActions.Add(new MOActionWrapper(Sheets.GeneralActions.GetRow(dutyActionRowId)));
-                }
-            }
-            JobActions.Add(availableJobs.RowId, availableActions);
-        }
+        ApplicableActions = tmp.OrderBy(c => c.Name.ExtractText()).ToList();
     }
 }

@@ -55,7 +55,7 @@ public class MOAction
     private unsafe bool HandleRequestAction(ActionManager* thisPtr, ActionType actionType, uint actionId, ulong targetId, uint extraParam, ActionManager.UseActionMode mode, uint comboRouteId, bool* outOptAreaTargeted)
     {
         // Only care about "real" actions. Not doing anything dodgy
-        if (!(actionType == ActionType.Action))
+        if (actionType != ActionType.Action)
             return RequestActionHook.Original(thisPtr, actionType, actionId, targetId, extraParam, mode, comboRouteId, outOptAreaTargeted);
         Plugin.PluginLog.Verbose($"Receiving handling request for Action: {actionId}");
 
@@ -109,35 +109,16 @@ public class MOAction
             Plugin.PluginLog.Verbose("ILLEGAL STATE: Dalamud thinks you're an ADV\nFailsafe triggering early return");
             return (default, null);
         }
+
         var actionManager = ActionManager.Instance();
         var adjusted = actionManager->GetAdjustedActionId(actionID);
-        Plugin.PluginLog.Verbose($"{adjusted}");
 
-
-        var firstdutyactionid = DutyActionManager.GetDutyActionId(0);
-        var seconddutyactionid = DutyActionManager.GetDutyActionId(1);
-        IEnumerable<MoActionStack> applicableActions;
-        if (action.RowId == firstdutyactionid)
-        {
-            applicableActions = Stacks.Where(entry => entry.BaseAction.actionType == ActionType.GeneralAction && entry.BaseAction.RowId() == 26);
-        }
-        else if (action.RowId == seconddutyactionid)
-        {
-            applicableActions = Stacks.Where(entry => entry.BaseAction.actionType == ActionType.GeneralAction && entry.BaseAction.RowId() == 27);
-        }
-        //TODO add custom logic to fetch what is currently inside the phantom action buttons 1-5 and compare that to the current actionid, if they match, fetch the stacks for the phantom actions 1-5
-        else
-        {
-            applicableActions = Stacks.Where(entry =>
-                entry.BaseAction.actionType == ActionType.Action &&
-                (
-                entry.BaseAction.RowId() == action.RowId ||
-                entry.BaseAction.RowId() == adjusted ||
-                actionManager->GetAdjustedActionId(entry.BaseAction.RowId()) == adjusted
-                )
-                && VerifyJobEqualsOrEqualsParentJob(entry.Job, Plugin.ClientState.LocalPlayer.ClassJob.RowId)
-                );
-        }
+        var applicableActions = Stacks.Where(entry =>
+            (entry.BaseAction.RowId == action.RowId ||
+            entry.BaseAction.RowId == adjusted ||
+            actionManager->GetAdjustedActionId(entry.BaseAction.RowId) == adjusted)
+            && VerifyJobEqualsOrEqualsParentJob(entry.Job, Plugin.ClientState.LocalPlayer.ClassJob.RowId)
+            );
 
         MoActionStack stackToUse = null;
         foreach (var entry in applicableActions)
@@ -161,10 +142,10 @@ public class MOAction
 
         foreach (var entry in stackToUse.Entries)
         {
-            Plugin.PluginLog.Verbose($"unadjusted entry action, {entry.Action.RowId()}, {entry.Action.Name()}");
+            Plugin.PluginLog.Verbose($"unadjusted entry action, {entry.Action.RowId}, {entry.Action.Name.ExtractText()}");
             var (response, target) = CanUseAction(entry, actionType);
             if (response)
-                return (entry.Action.Action!.Value, target);
+                return (entry.Action, target);
         }
 
         Plugin.PluginLog.Verbose("Chosen MoAction Entry stack did not have any usable actions.");
@@ -173,36 +154,11 @@ public class MOAction
 
     private unsafe (bool, IGameObject Target) CanUseAction(StackEntry targ, ActionType actionType)
     {
-        if (targ.Target == null || targ.Action.RowId() == 0 || Plugin.ClientState.LocalPlayer == null)
+        if (targ.Target == null || targ.Action.RowId == 0 || Plugin.ClientState.LocalPlayer == null)
             return (false, null);
 
         var actionManager = ActionManager.Instance();
-
-        uint id = 0;
-        if (targ.Action.actionType == ActionType.Action)
-        {
-            id = targ.Action.RowId();
-        }
-        else
-        {
-            //Handling duty actions 1 and 2
-            if (targ.Action.actionType == ActionType.GeneralAction)
-            {
-                if (targ.Action.RowId() == 26)
-                {
-                    id = DutyActionManager.GetDutyActionId(0);
-                }
-                else if (targ.Action.RowId() == 27)
-                {
-                    id = DutyActionManager.GetDutyActionId(1);
-                }
-                //TODO find a way to custom handle actions 31-35 so that the action currently in the Phantom action 1-5 button is fetched on "action" 31-35
-            }
-        }
-        if (id == 0)
-            return (false, null);
-
-        if (!Sheets.ActionSheet.TryGetRow(actionManager->GetAdjustedActionId(id), out var action))
+        if (!Sheets.ActionSheet.TryGetRow(actionManager->GetAdjustedActionId(targ.Action.RowId), out var action))
             return (false, null); // just in case
 
         var target = targ.Target.GetTarget();
