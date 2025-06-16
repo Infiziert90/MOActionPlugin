@@ -1,0 +1,92 @@
+﻿[
+  {
+    "BaseId": 31,
+    "ActionType": 5,
+    "ConfigurationActionStacks": [
+      {
+        "Target": "UI Mouseover",
+        "ActionId": 31,
+        "ActionType": 5
+      },
+      {
+        "Target": "Target",
+        "ActionId": 31,
+        "ActionType": 5
+      }
+    ],
+    "Modifier": 0,
+    "JobIdx": 0
+  },
+  {
+    "BaseId": 32,
+    "ActionType": 5,
+    "ConfigurationActionStacks": [
+      {
+        "Target": "UI Mouseover",
+        "ActionId": 32,
+        "ActionType": 5
+      },
+      {
+        "Target": "Target",
+        "ActionId": 32,
+        "ActionType": 5
+      }
+    ],
+    "Modifier": 0,
+    "JobIdx": 0
+  },
+  {
+    "BaseId": 33,
+    "ActionType": 5,
+    "ConfigurationActionStacks": [
+      {
+        "Target": "UI Mouseover",
+        "ActionId": 33,
+        "ActionType": 5
+      },
+      {
+        "Target": "Target",
+        "ActionId": 33,
+        "ActionType": 5
+      }
+    ],
+    "Modifier": 0,
+    "JobIdx": 0
+  },
+  {
+    "BaseId": 34,
+    "ActionType": 5,
+    "ConfigurationActionStacks": [
+      {
+        "Target": "UI Mouseover",
+        "ActionId": 34,
+        "ActionType": 5
+      },
+      {
+        "Target": "Target",
+        "ActionId": 34,
+        "ActionType": 5
+      }
+    ],
+    "Modifier": 0,
+    "JobIdx": 0
+  },
+  {
+    "BaseId": 35,
+    "ActionType": 5,
+    "ConfigurationActionStacks": [
+      {
+        "Target": "UI Mouseover",
+        "ActionId": 35,
+        "ActionType": 5
+      },
+      {
+        "Target": "Target",
+        "ActionId": 35,
+        "ActionType": 5
+      }
+    ],
+    "Modifier": 0,
+    "JobIdx": 0
+  }
+]

@@ -1,117 +1,142 @@
 [
-    {
-        "BaseId": 155,
-        "Stack": [
-            {
-                "Item1": "UI Mouseover",
-                "Item2": 155
-            },
-            {
-                "Item1": "Field Mouseover",
-                "Item2": 155
-            },
-            {
-                "Item1": "Crosshair",
-                "Item2": 155
-            },
-            {
-                "Item1": "Target",
-                "Item2": 155
-            }
-        ],
-        "Modifier": 0,
-        "JobIdx": 25
-    },
-    {
-        "BaseId": 25762,
-        "Stack": [
-            {
-                "Item1": "UI Mouseover",
-                "Item2": 25762
-            },
-            {
-                "Item1": "Field Mouseover",
-                "Item2": 25762
-            },
-            {
-                "Item1": "Crosshair",
-                "Item2": 25762
-            },
-            {
-                "Item1": "Target",
-                "Item2": 25762
-            }
-        ],
-        "Modifier": 0,
-        "JobIdx": 20
-    },
-    {
-        "BaseId": 2262,
-        "Stack": [
-            {
-                "Item1": "UI Mouseover",
-                "Item2": 2262
-            },
-            {
-                "Item1": "Field Mouseover",
-                "Item2": 2262
-            },
-            {
-                "Item1": "Crosshair",
-                "Item2": 2262
-            },
-            {
-                "Item1": "Target",
-                "Item2": 2262
-            }
-        ],
-        "Modifier": 0,
-        "JobIdx": 30
-    },
-    {
-        "BaseId": 24295,
-        "Stack": [
-            {
-                "Item1": "UI Mouseover",
-                "Item2": 24295
-            },
-            {
-                "Item1": "Field Mouseover",
-                "Item2": 24295
-            },
-            {
-                "Item1": "Crosshair",
-                "Item2": 24295
-            },
-            {
-                "Item1": "Target",
-                "Item2": 24295
-            }
-        ],
-        "Modifier": 0,
-        "JobIdx": 40
-    },
-    {
-        "BaseId": 34646,
-        "Stack": [
-            {
-                "Item1": "UI Mouseover",
-                "Item2": 34646
-            },
-            {
-                "Item1": "Field Mouseover",
-                "Item2": 34646
-            },
-            {
-                "Item1": "Crosshair",
-                "Item2": 34646
-            },
-            {
-                "Item1": "Target",
-                "Item2": 34646
-            }
-        ],
-        "Modifier": 0,
-        "JobIdx": 41
-    }
+  {
+    "BaseId": 155,
+    "ActionType": 1,
+    "ConfigurationActionStacks": [
+      {
+        "Target": "UI Mouseover",
+        "ActionId": 155,
+        "ActionType": 1
+      },
+      {
+        "Target": "Field Mouseover",
+        "ActionId": 155,
+        "ActionType": 1
+      },
+      {
+        "Target": "Crosshair",
+        "ActionId": 155,
+        "ActionType": 1
+      },
+      {
+        "Target": "Target",
+        "ActionId": 155,
+        "ActionType": 1
+      }
+    ],
+    "Modifier": 0,
+    "JobIdx": 25
+  },
+  {
+    "BaseId": 25762,
+    "ActionType": 1,
+    "ConfigurationActionStacks": [
+      {
+        "Target": "UI Mouseover",
+        "ActionId": 25762,
+        "ActionType": 1
+      },
+      {
+        "Target": "Field Mouseover",
+        "ActionId": 25762,
+        "ActionType": 1
+      },
+      {
+        "Target": "Crosshair",
+        "ActionId": 25762,
+        "ActionType": 1
+      },
+      {
+        "Target": "Target",
+        "ActionId": 25762,
+        "ActionType": 1
+      }
+    ],
+    "Modifier": 0,
+    "JobIdx": 20
+  },
+  {
+    "BaseId": 2262,
+    "ActionType": 1,
+    "ConfigurationActionStacks": [
+      {
+        "Target": "UI Mouseover",
+        "ActionId": 2262,
+        "ActionType": 1
+      },
+      {
+        "Target": "Field Mouseover",
+        "ActionId": 2262,
+        "ActionType": 1
+      },
+      {
+        "Target": "Crosshair",
+        "ActionId": 2262,
+        "ActionType": 1
+      },
+      {
+        "Target": "Target",
+        "ActionId": 2262,
+        "ActionType": 1
+      }
+    ],
+    "Modifier": 0,
+    "JobIdx": 30
+  },
+  {
+    "BaseId": 24295,
+    "ActionType": 1,
+    "ConfigurationActionStacks": [
+      {
+        "Target": "UI Mouseover",
+        "ActionId": 24295,
+        "ActionType": 1
+      },
+      {
+        "Target": "Field Mouseover",
+        "ActionId": 24295,
+        "ActionType": 1
+      },
+      {
+        "Target": "Crosshair",
+        "ActionId": 24295,
+        "ActionType": 1
+      },
+      {
+        "Target": "Target",
+        "ActionId": 24295,
+        "ActionType": 1
+      }
+    ],
+    "Modifier": 0,
+    "JobIdx": 40
+  },
+  {
+    "BaseId": 34646,
+    "ActionType": 1,
+    "ConfigurationActionStacks": [
+      {
+        "Target": "UI Mouseover",
+        "ActionId": 34646,
+        "ActionType": 1
+      },
+      {
+        "Target": "Field Mouseover",
+        "ActionId": 34646,
+        "ActionType": 1
+      },
+      {
+        "Target": "Crosshair",
+        "ActionId": 34646,
+        "ActionType": 1
+      },
+      {
+        "Target": "Target",
+        "ActionId": 34646,
+        "ActionType": 1
+      }
+    ],
+    "Modifier": 0,
+    "JobIdx": 41
+  }
 ]
