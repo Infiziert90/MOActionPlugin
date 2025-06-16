@@ -3,7 +3,6 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using Lumina.Excel.Sheets;
 using MOAction.Configuration;
-using FFXIVClientStructs.FFXIV.Client.Game;
 
 namespace MOAction;
 
@@ -25,29 +24,6 @@ public static class Utils
     {
         (list[i], list[j]) = (list[j], list[i]);
     }
-
-    public static unsafe bool getActionFromGeneralDutyAction(GeneralAction generalAction, out Action action)
-    {
-        var actionManager = ActionManager.Instance();
-        uint id = 0;
-        if (generalAction.RowId == 26)
-        {
-            id = DutyActionManager.GetDutyActionId(0);
-        }
-        else if (generalAction.RowId == 27)
-        {
-            id = DutyActionManager.GetDutyActionId(1);
-        }
-
-        if (id == 0)
-        {
-            action = default;
-            return false;
-        }
-
-        return Sheets.ActionSheet.TryGetRow(actionManager->GetAdjustedActionId(id), out action);
-
-    }
 }
 
 public class ActionWrapperComparer : IEqualityComparer<MOActionWrapper>
@@ -62,4 +38,3 @@ public class ActionWrapperComparer : IEqualityComparer<MOActionWrapper>
         return obj.RowId().GetHashCode();
     }
 }
-
