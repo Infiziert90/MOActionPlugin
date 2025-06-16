@@ -4,19 +4,23 @@
         "Stack": [
             {
                 "Item1": "UI Mouseover",
-                "Item2": 155
+                "Item2": 155,
+                "Item3": 1
             },
             {
                 "Item1": "Field Mouseover",
-                "Item2": 155
+                "Item2": 155,
+                "Item3": 1
             },
             {
                 "Item1": "Crosshair",
-                "Item2": 155
+                "Item2": 155,
+                "Item3": 1
             },
             {
                 "Item1": "Target",
-                "Item2": 155
+                "Item2": 155,
+                "Item3": 1
             }
         ],
         "Modifier": 0,
@@ -27,19 +31,23 @@
         "Stack": [
             {
                 "Item1": "UI Mouseover",
-                "Item2": 25762
+                "Item2": 25762,
+                "Item3": 1
             },
             {
                 "Item1": "Field Mouseover",
-                "Item2": 25762
+                "Item2": 25762,
+                "Item3": 1
             },
             {
                 "Item1": "Crosshair",
-                "Item2": 25762
+                "Item2": 25762,
+                "Item3": 1
             },
             {
                 "Item1": "Target",
-                "Item2": 25762
+                "Item2": 25762,
+                "Item3": 1
             }
         ],
         "Modifier": 0,
@@ -50,19 +58,23 @@
         "Stack": [
             {
                 "Item1": "UI Mouseover",
-                "Item2": 2262
+                "Item2": 2262,
+                "Item3": 1
             },
             {
                 "Item1": "Field Mouseover",
-                "Item2": 2262
+                "Item2": 2262,
+                "Item3": 1
             },
             {
                 "Item1": "Crosshair",
-                "Item2": 2262
+                "Item2": 2262,
+                "Item3": 1
             },
             {
                 "Item1": "Target",
-                "Item2": 2262
+                "Item2": 2262,
+                "Item3": 1
             }
         ],
         "Modifier": 0,
@@ -73,19 +85,23 @@
         "Stack": [
             {
                 "Item1": "UI Mouseover",
-                "Item2": 24295
+                "Item2": 24295,
+                "Item3": 1
             },
             {
                 "Item1": "Field Mouseover",
-                "Item2": 24295
+                "Item2": 24295,
+                "Item3": 1
             },
             {
                 "Item1": "Crosshair",
-                "Item2": 24295
+                "Item2": 24295,
+                "Item3": 1
             },
             {
                 "Item1": "Target",
-                "Item2": 24295
+                "Item2": 24295,
+                "Item3": 1
             }
         ],
         "Modifier": 0,
@@ -96,19 +112,23 @@
         "Stack": [
             {
                 "Item1": "UI Mouseover",
-                "Item2": 34646
+                "Item2": 34646,
+                "Item3": 1
             },
             {
                 "Item1": "Field Mouseover",
-                "Item2": 34646
+                "Item2": 34646,
+                "Item3": 1
             },
             {
                 "Item1": "Crosshair",
-                "Item2": 34646
+                "Item2": 34646,
+                "Item3": 1
             },
             {
                 "Item1": "Target",
-                "Item2": 34646
+                "Item2": 34646,
+                "Item3": 1
             }
         ],
         "Modifier": 0,
