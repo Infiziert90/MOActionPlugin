@@ -49,9 +49,8 @@ public class Plugin : IDalamudPlugin
     public readonly List<Lumina.Excel.Sheets.ClassJob> JobAbbreviations;
     public Dictionary<uint, List<MOActionWrapper>> JobActions = [];
 
-    //31-35 are phantom actions 1-5, they're used as flags to be able to build stacks on duty action 1-5
-    //A more elegant solution is something I did not immediately find.
-    public static readonly uint[] UsedDutyActionRowIds = [31, 32, 33, 34, 35];
+    //26/27 are duty actions, 31-35 are phantom skills, phantom skills not yet implemented
+    public static readonly uint[] dutyActionRowIds = [26, 27, 31, 32, 33, 34, 35];
 
     public Plugin()
     {
@@ -268,7 +267,7 @@ public class Plugin : IDalamudPlugin
         ApplicableActions = [.. Sheets.ActionSheet.Where(row => row is { IsPlayerAction: true, IsPvP: false, ClassJobLevel: > 0 }).Where(a => a.RowId != 212).Select(y => { return new MOActionWrapper(y); })];
         if (Configuration.IncludeDutyActions)
         {
-            foreach (uint dutyActionRowId in UsedDutyActionRowIds)
+            foreach (uint dutyActionRowId in dutyActionRowIds)
             {
                 ApplicableActions.Add(new MOActionWrapper(Sheets.GeneralActions.GetRow(dutyActionRowId)));
             }
@@ -284,7 +283,7 @@ public class Plugin : IDalamudPlugin
             }).ToList();
             if (Configuration.IncludeDutyActions)
             {
-                foreach (uint dutyActionRowId in UsedDutyActionRowIds)
+                foreach (uint dutyActionRowId in dutyActionRowIds)
                 {
                     availableActions.Add(new MOActionWrapper(Sheets.GeneralActions.GetRow(dutyActionRowId)));
                 }
