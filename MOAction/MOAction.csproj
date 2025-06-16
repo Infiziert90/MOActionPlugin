@@ -4,14 +4,12 @@
     <AssemblyTitle>MOActionPlugin</AssemblyTitle>
     <Product>MOActionPlugin</Product>
     <Description>This plugin allows for actions to be used on mouseover targets without a macro.</Description>
-    <Copyright>Copyleft Infi, attick 2024 baybeeee</Copyright>
-    <AssemblyVersion>4.4.3</AssemblyVersion>
-    <FileVersion>4.4.3</FileVersion>
+    <Copyright>Copyleft Infi, attick 2025</Copyright>
+    <Version>4.6.0</Version>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <OutputPath>bin\$(Configuration)\</OutputPath>
     <AppDesignerFolder>Properties.bak</AppDesignerFolder>
   </PropertyGroup>
-
 
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugType>full</DebugType>
@@ -24,14 +22,9 @@
     <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
   </PropertyGroup>
 
-  <PropertyGroup>
-    <DalamudLibPath>$(appdata)\XIVLauncher\addon\Hooks\dev\</DalamudLibPath>
-  </PropertyGroup>
-
-
   <ItemGroup>
-   <Content Include="beginner\**">
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </Content>
+    <Content Include="beginner\**">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 </Project>
