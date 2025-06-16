@@ -4,11 +4,13 @@
         "Stack": [
             {
                 "Item1": "UI Mouseover",
-                "Item2": 120
+                "Item2": 120,
+                "Item3": 1
             },
             {
                 "Item1": "Target",
-                "Item2": 120
+                "Item2": 120,
+                "Item3": 1
             }
         ],
         "Modifier": 0,
@@ -19,11 +21,13 @@
         "Stack": [
             {
                 "Item1": "UI Mouseover",
-                "Item2": 125
+                "Item2": 125,
+                "Item3": 1
             },
             {
                 "Item1": "Target",
-                "Item2": 125
+                "Item2": 125,
+                "Item3": 1
             }
         ],
         "Modifier": 0,
@@ -34,11 +38,13 @@
         "Stack": [
             {
                 "Item1": "UI Mouseover",
-                "Item2": 137
+                "Item2": 137,
+                "Item3": 1
             },
             {
                 "Item1": "Target",
-                "Item2": 137
+                "Item2": 137,
+                "Item3": 1
             }
         ],
         "Modifier": 0,
@@ -49,11 +55,13 @@
         "Stack": [
             {
                 "Item1": "UI Mouseover",
-                "Item2": 135
+                "Item2": 135,
+                "Item3": 1
             },
             {
                 "Item1": "Target",
-                "Item2": 135
+                "Item2": 135,
+                "Item3": 1
             }
         ],
         "Modifier": 0,
@@ -64,11 +72,13 @@
         "Stack": [
             {
                 "Item1": "UI Mouseover",
-                "Item2": 131
+                "Item2": 131,
+                "Item3": 1
             },
             {
                 "Item1": "Target",
-                "Item2": 131
+                "Item2": 131,
+                "Item3": 1
             }
         ],
         "Modifier": 0,
@@ -79,7 +89,8 @@
         "Stack": [
             {
                 "Item1": "Self",
-                "Item2": 25862
+                "Item2": 25862,
+                "Item3": 1
             }
         ],
         "Modifier": 0,
@@ -90,7 +101,8 @@
         "Stack": [
             {
                 "Item1": "Target",
-                "Item2": 3569
+                "Item2": 3569,
+                "Item3": 1
             }
         ],
         "Modifier": 0,
@@ -101,11 +113,13 @@
         "Stack": [
             {
                 "Item1": "UI Mouseover",
-                "Item2": 3570
+                "Item2": 3570,
+                "Item3": 1
             },
             {
                 "Item1": "Target",
-                "Item2": 3570
+                "Item2": 3570,
+                "Item3": 1
             }
         ],
         "Modifier": 0,
@@ -116,11 +130,13 @@
         "Stack": [
             {
                 "Item1": "UI Mouseover",
-                "Item2": 16531
+                "Item2": 16531,
+                "Item3": 1
             },
             {
                 "Item1": "Target",
-                "Item2": 16531
+                "Item2": 16531,
+                "Item3": 1
             }
         ],
         "Modifier": 0,
@@ -131,11 +147,13 @@
         "Stack": [
             {
                 "Item1": "UI Mouseover",
-                "Item2": 25861
+                "Item2": 25861,
+                "Item3": 1
             },
             {
                 "Item1": "Target",
-                "Item2": 25861
+                "Item2": 25861,
+                "Item3": 1
             }
         ],
         "Modifier": 0,
@@ -146,11 +164,13 @@
         "Stack": [
             {
                 "Item1": "UI Mouseover",
-                "Item2": 140
+                "Item2": 140,
+                "Item3": 1
             },
             {
                 "Item1": "Target",
-                "Item2": 140
+                "Item2": 140,
+                "Item3": 1
             }
         ],
         "Modifier": 0,
@@ -161,11 +181,13 @@
         "Stack": [
             {
                 "Item1": "UI Mouseover",
-                "Item2": 7432
+                "Item2": 7432,
+                "Item3": 1
             },
             {
                 "Item1": "Target",
-                "Item2": 7432
+                "Item2": 7432,
+                "Item3": 1
             }
         ],
         "Modifier": 0,
