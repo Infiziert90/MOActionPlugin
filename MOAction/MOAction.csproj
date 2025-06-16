@@ -5,8 +5,8 @@
     <Product>MOActionPlugin</Product>
     <Description>This plugin allows for actions to be used on mouseover targets without a macro.</Description>
     <Copyright>Copyleft Infi, attick 2024 baybeeee</Copyright>
-    <AssemblyVersion>4.4.3</AssemblyVersion>
-    <FileVersion>4.4.3</FileVersion>
+    <AssemblyVersion>4.7.0</AssemblyVersion>
+    <FileVersion>4.7.0</FileVersion>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <OutputPath>bin\$(Configuration)\</OutputPath>
     <AppDesignerFolder>Properties.bak</AppDesignerFolder>
