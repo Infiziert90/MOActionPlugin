@@ -69,6 +69,8 @@ public class Plugin : IDalamudPlugin
             ShowInHelp = true
         });
 
+        IPCProvider.RegisterIPC(this, PluginInterface);
+
         JobAbbreviations = Sheets.ClassJobSheet.Where(x => x.JobIndex > 0).OrderBy(c => c.Abbreviation.ExtractText()).ToList();
         ApplicableActions = Sheets.ActionSheet.Where(row => row is { IsPlayerAction: true, IsPvP: false, ClassJobLevel: > 0 }).Where(a => a.RowId != 212).ToList();
 
@@ -245,6 +247,7 @@ public class Plugin : IDalamudPlugin
         PluginInterface.UiBuilder.OpenConfigUi -= OpenUi;
         PluginInterface.UiBuilder.Draw -= Draw;
 
+        IPCProvider.Dispose();
         MoAction.Dispose();
         CommandManager.RemoveHandler("/pmoaction");
         CommandManager.RemoveHandler("/moaction");
