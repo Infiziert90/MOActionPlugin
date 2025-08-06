@@ -3,7 +3,7 @@ using Dalamud.Plugin;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using ImGuiNET;
+using Dalamud.Bindings.ImGui;
 using MOAction.Target;
 using MOAction.Configuration;
 using Dalamud.Game.ClientState.Objects;
