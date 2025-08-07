@@ -2,7 +2,7 @@ using System;
 using System.IO;
 using System.Text;
 using Dalamud.Interface.Utility.Raii;
-using ImGuiNET;
+using Dalamud.Bindings.ImGui;
 
 
 namespace MOAction.Windows.Config;
