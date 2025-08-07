@@ -26,7 +26,7 @@ public static class IPCProvider
         Plugin.MoAction.Stacks.ForEach(stack =>
         {
             // Add the base action
-            var baseAction = stack.BaseAction.RowId;
+            var baseAction = stack.BaseAction.RowId();
             if (retargetedActions.Contains(baseAction))
                 return;
 
@@ -35,7 +35,7 @@ public static class IPCProvider
             stack.Entries.ForEach(entry =>
             {
                 // Add the action from the stack entry
-                var actionId = entry.Action.RowId;
+                var actionId = entry.Action.RowId();
                 if (actionId == baseAction || retargetedActions.Contains(actionId))
                     return;
 
