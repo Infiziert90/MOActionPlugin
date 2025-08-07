@@ -3,7 +3,7 @@ using Dalamud.Plugin;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using ImGuiNET;
+using Dalamud.Bindings.ImGui;
 using MOAction.Target;
 using MOAction.Configuration;
 using Dalamud.Game.ClientState.Objects;
@@ -70,6 +70,7 @@ public class Plugin : IDalamudPlugin
             HelpMessage = "Alias for /pmoaction.",
             ShowInHelp = true
         });
+        IPCProvider.RegisterIPC(this, PluginInterface);
         var config = PluginInterface.GetPluginConfig() as MOActionConfiguration ?? new MOActionConfiguration();
         MoAction = new MOAction(this);
         JobAbbreviations = [.. Sheets.ClassJobSheet.Where(x => x.JobIndex > 0).OrderBy(c => c.Abbreviation.ExtractText())];
@@ -239,6 +240,7 @@ public class Plugin : IDalamudPlugin
         PluginInterface.UiBuilder.OpenConfigUi -= OpenUi;
         PluginInterface.UiBuilder.Draw -= Draw;
 
+        IPCProvider.Dispose();
         MoAction.Dispose();
         CommandManager.RemoveHandler("/pmoaction");
         CommandManager.RemoveHandler("/moaction");

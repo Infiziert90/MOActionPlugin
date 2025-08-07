@@ -3,14 +3,12 @@ using Dalamud.Interface.Utility;
 using Dalamud.Interface.Utility.Raii;
 using Dalamud.Interface.Windowing;
 using FFXIVClientStructs.FFXIV.Common.Math;
-using ImGuiNET;
+using Dalamud.Bindings.ImGui;
 using System.Collections.Generic;
 using System.Text;
 using MOAction.Configuration;
 using Newtonsoft.Json;
-using Dalamud.Plugin.Services;
 using System.Linq;
-using Dalamud.Interface.Style;
 
 namespace MOAction.Windows.Config;
 
