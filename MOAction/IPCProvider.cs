@@ -26,17 +26,17 @@ public static class IPCProvider
         Plugin.MoAction.Stacks.ForEach(stack =>
         {
             // Add the base action
-            var baseAction = stack.BaseAction.RowId;
-            if (retargetedActions.Contains(baseAction))
+            var baseAction = stack.BaseAction;
+            if (retargetedActions.Contains(baseAction.RowId) || baseAction.ActionType != FFXIVClientStructs.FFXIV.Client.Game.ActionType.Action)
                 return;
 
-            retargetedActions.Add(baseAction);
+            retargetedActions.Add(baseAction.RowId);
 
             stack.Entries.ForEach(entry =>
             {
                 // Add the action from the stack entry
                 var actionId = entry.Action.RowId;
-                if (actionId == baseAction || retargetedActions.Contains(actionId))
+                if (actionId == baseAction.RowId || retargetedActions.Contains(actionId))
                     return;
 
                 retargetedActions.Add(actionId);
