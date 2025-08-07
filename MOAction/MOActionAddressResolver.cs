@@ -16,6 +16,6 @@ public class MOActionAddressResolver
         //   v24 = v23 ^ 1;
         //   break;
         //this signature refers to the XOR operator in said check
-        GtQueuePatch = sig.ScanModule("0F B6 C2 34 01 84 C0 0F 84");
+        GtQueuePatch = sig.ScanModule("0F B6 C2 34 ?? 84 C0");
     }
 }

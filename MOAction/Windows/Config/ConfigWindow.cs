@@ -8,9 +8,7 @@ using System.Collections.Generic;
 using System.Text;
 using MOAction.Configuration;
 using Newtonsoft.Json;
-using Dalamud.Plugin.Services;
 using System.Linq;
-using Dalamud.Interface.Style;
 
 namespace MOAction.Windows.Config;
 
