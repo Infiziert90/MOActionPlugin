@@ -55,16 +55,16 @@ public static class Utils
     }
 }
 
-public class ActionWrapperComparer : IEqualityComparer<MOActionWrapper>
+public class MoActionRecordComparer : IEqualityComparer<MoActionRecord>
 {
-    bool IEqualityComparer<MOActionWrapper>.Equals(MOActionWrapper x, MOActionWrapper y)
+    bool IEqualityComparer<MoActionRecord>.Equals(MoActionRecord x, MoActionRecord y)
     {
-        return x.RowId() == y.RowId() && x.actionType == y.actionType;
+        return x.RowId == y.RowId && x.ActionType == y.ActionType;
     }
 
-    int IEqualityComparer<MOActionWrapper>.GetHashCode(MOActionWrapper obj)
+    int IEqualityComparer<MoActionRecord>.GetHashCode(MoActionRecord obj)
     {
-        return obj.RowId().GetHashCode();
+        return obj.RowId.GetHashCode();
     }
 }
 

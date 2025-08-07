@@ -136,8 +136,8 @@ public class MOAction
                 isDutyAction = true;
                 //Fetch the stacks we linked to phantom actions 1-5 to match between duty actions 0-4
                 applicableActions = Stacks.Where(entry =>
-                    entry.BaseAction.actionType == ActionType.GeneralAction &&
-                    entry.BaseAction.RowId() == 31 + dutyActionSlot);
+                    entry.BaseAction.ActionType == ActionType.GeneralAction &&
+                    entry.BaseAction.RowId == 31 + dutyActionSlot);
                 break;
             }
         }
@@ -145,11 +145,11 @@ public class MOAction
         if (!isDutyAction)
         {
             applicableActions = Stacks.Where(entry =>
-                entry.BaseAction.actionType == ActionType.Action &&
+                entry.BaseAction.ActionType == ActionType.Action &&
                 (
-                    entry.BaseAction.RowId() == action.RowId ||
-                    entry.BaseAction.RowId() == adjusted ||
-                    actionManager->GetAdjustedActionId(entry.BaseAction.RowId()) == adjusted
+                    entry.BaseAction.RowId == action.RowId ||
+                    entry.BaseAction.RowId == adjusted ||
+                    actionManager->GetAdjustedActionId(entry.BaseAction.RowId) == adjusted
                 )
                 && VerifyJobEqualsOrEqualsParentJob(entry.Job, Plugin.ClientState.LocalPlayer.ClassJob.RowId)
             );
@@ -177,7 +177,7 @@ public class MOAction
 
         foreach (var entry in stackToUse.Entries)
         {
-            Plugin.PluginLog.Verbose($"unadjusted entry action, {entry.Action.RowId()}, {entry.Action.Name()}");
+            Plugin.PluginLog.Verbose($"unadjusted entry action, {entry.Action.RowId}, {entry.Action.Name}");
             if (CanUseAction(entry, actionType, out var target, out var usedAction))
             {
                 return (usedAction, target);
@@ -192,22 +192,22 @@ public class MOAction
     /// Figures out if you are able to cast the action inside stackentry at the target inside the stack entry.
     /// </summary>
     /// <param name="stackentry">stack entry to be checked</param>
-    /// <param name="actionType">used for the cooldown check, should always be "Action"</param>
+    /// <param name="actionType">used for the cooldown check, should always be "Action" or GeneralAction</param>
     /// <param name="target">out parameter, the target to return to the hook to fire the spell at</param>
     /// <param name="action">out parameter, the spell to return to the hook to fire at the target</param>
     private unsafe bool CanUseAction(StackEntry stackentry, ActionType actionType, out IGameObject target, out Lumina.Excel.Sheets.Action action)
     {
         target = stackentry.Target.GetTarget();
-        var id = stackentry.Action.RowId();
+        var id = stackentry.Action.RowId;
         //Early sanity checks
-        if (stackentry.Target == null || id == 0 || Plugin.ClientState.LocalPlayer == null || stackentry.Action.actionType is not (ActionType.GeneralAction or ActionType.Action))
+        if (stackentry.Target == null || id == 0 || Plugin.ClientState.LocalPlayer == null || stackentry.Action.ActionType is not (ActionType.GeneralAction or ActionType.Action))
         {
             action = default;
             return false;
         }
         var actionManager = ActionManager.Instance();
         //assign the out action to the action to be checked if can be used
-        if (stackentry.Action.actionType == ActionType.Action)
+        if (stackentry.Action.ActionType == ActionType.Action)
         {
             if (!Sheets.ActionSheet.TryGetRow(actionManager->GetAdjustedActionId(id), out action))
                 return false; // just in case

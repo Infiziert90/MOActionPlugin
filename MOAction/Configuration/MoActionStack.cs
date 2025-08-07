@@ -8,7 +8,7 @@ namespace MOAction.Configuration;
 public class MoActionStack : IEquatable<MoActionStack>, IComparable<MoActionStack>
 {
     public static readonly VirtualKey[] AllKeys = [VirtualKey.NO_KEY, VirtualKey.SHIFT, VirtualKey.MENU, VirtualKey.CONTROL];
-    public MOActionWrapper BaseAction { get; set; }
+    public MoActionRecord BaseAction { get; set; }
     public List<StackEntry> Entries { get; set; }
     public uint Job { get; set; }
 
@@ -29,7 +29,7 @@ public class MoActionStack : IEquatable<MoActionStack>, IComparable<MoActionStac
         Job = uint.MaxValue;
         Modifier = 0;
     }
-     public MoActionStack(MOActionWrapper baseAction, List<StackEntry> list)
+     public MoActionStack(MoActionRecord baseAction, List<StackEntry> list)
     {
         BaseAction = baseAction;
         Entries = list ?? [];
@@ -53,14 +53,14 @@ public class MoActionStack : IEquatable<MoActionStack>, IComparable<MoActionStac
         {
             var myEntry = Entries[i];
             var theirEntry = c.ConfigurationActionStacks[i];
-            if (myEntry.Target.TargetName != theirEntry.Target && myEntry.Action.RowId() != theirEntry.ActionId && myEntry.Action.actionType != theirEntry.ActionType)
+            if (myEntry.Target.TargetName != theirEntry.Target && myEntry.Action.RowId != theirEntry.ActionId && myEntry.Action.ActionType != theirEntry.ActionType)
                 return false;
         }
 
         if (Modifier != c.Modifier)
             return false;
 
-        if (BaseAction.RowId() != c.BaseId)
+        if (BaseAction.RowId!= c.BaseId)
             return false;
 
         return true;
@@ -72,13 +72,13 @@ public class MoActionStack : IEquatable<MoActionStack>, IComparable<MoActionStac
         if (other == null)
             return 1;
 
-        return string.Compare(BaseAction.Name(), other.BaseAction.Name(), StringComparison.Ordinal);
+        return string.Compare(BaseAction.Name, other.BaseAction.Name, StringComparison.Ordinal);
     }
 
     //TODO make the overwritten equals and hashcodes a bit more smart, to not ignore the deeper stackentry list
     public override int GetHashCode()
     {
-        return (int)(BaseAction.RowId() + Job.GetHashCode() + (int)Modifier);
+        return (int)(BaseAction.RowId + Job.GetHashCode() + (int)Modifier);
     }
 
     //TODO make the overwritten equals and hashcodes a bit more smart, to not ignore the deeper stackentry list
@@ -110,5 +110,5 @@ public class MoActionStack : IEquatable<MoActionStack>, IComparable<MoActionStac
         return Job == uint.MaxValue ? "Unset Job" : Job.ToString();
     }
 
-    public override string ToString() => $"{BaseAction.Name()} - {string.Join(", ",Entries.Select(entry => $"[{entry}]"))}";
+    public override string ToString() => $"{BaseAction.Name} - {string.Join(", ",Entries.Select(entry => $"[{entry}]"))}";
 }

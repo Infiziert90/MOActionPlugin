@@ -139,7 +139,7 @@ public partial class ConfigWindow
             var targetComboLength = ImGui.CalcTextSize("Target of Target   ").X + ImGui.GetFrameHeightWithSpacing();
 
             var entry = list.ElementAt(i);
-            if (!ImGui.CollapsingHeader(entry.BaseAction.RowId() == 0 ? "Unset Action###" : $"{entry.BaseAction.Name()}###"))
+            if (!ImGui.CollapsingHeader(entry.BaseAction.RowId == 0 ? "Unset Action###" : $"{entry.BaseAction.Name}###"))
                 continue;
 
             // Require user to select a job, filtering actions down.
@@ -185,14 +185,14 @@ public partial class ConfigWindow
 
                 // Select base action.
                 ImGui.SetNextItemWidth(200);
-                var baseSelected = entry.BaseAction.RowId();
-                using (var combo = ImRaii.Combo("Base Action", entry.BaseAction.Name()))
+                var baseSelected = entry.BaseAction.RowId;
+                using (var combo = ImRaii.Combo("Base Action", entry.BaseAction.Name))
                 {
                     if (combo.Success)
                     {
                         foreach (var action in actionOptions)
                         {
-                            if (!ImGui.Selectable(action.Name()))
+                            if (!ImGui.Selectable(action.Name))
                                 continue;
                             entry.BaseAction = action;
                             if (entry.Entries.Count == 0)
@@ -207,7 +207,7 @@ public partial class ConfigWindow
 
                     }
                 }
-                if (entry.BaseAction.RowId() == 0)
+                if (entry.BaseAction.RowId == 0)
                     continue;
 
                 using (ImRaii.PushIndent())
@@ -226,7 +226,7 @@ public partial class ConfigWindow
                         {
                             if (innerCombo.Success)
                             {
-                                foreach (var target in stackEntry.Action.TargetArea() ? Plugin.TargetTypes.Append(Plugin.GroundTargetTypes) : Plugin.TargetTypes)
+                                foreach (var target in stackEntry.Action.TargetArea ? Plugin.TargetTypes.Append(Plugin.GroundTargetTypes) : Plugin.TargetTypes)
                                     if (ImGui.Selectable(target.TargetName))
                                         stackEntry.Target = target;
                             }
@@ -234,18 +234,18 @@ public partial class ConfigWindow
 
                         ImGui.SameLine();
                         ImGui.SetNextItemWidth(200);
-                        var selected = stackEntry.Action.RowId();
-                        using (var combo = ImRaii.Combo("Ability", stackEntry.Action.Name()))
+                        var selected = stackEntry.Action.RowId;
+                        using (var combo = ImRaii.Combo("Ability", stackEntry.Action.Name))
                         {
                             if (combo.Success)
                             {
                                 foreach (var action in actionOptions)
                                 {
-                                    if (!ImGui.Selectable(action.Name()))
+                                    if (!ImGui.Selectable(action.Name))
                                         continue;
 
                                     stackEntry.Action = action;
-                                    if (action.TargetArea() && Plugin.GroundTargetTypes == stackEntry.Target)
+                                    if (action.TargetArea && Plugin.GroundTargetTypes == stackEntry.Target)
                                         stackEntry.Target = null;
                                 }
 

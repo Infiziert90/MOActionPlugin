@@ -4,7 +4,7 @@ namespace MOAction.Configuration;
 
 public class StackEntry
 {
-    public MOActionWrapper Action;
+    public MoActionRecord Action;
     public TargetType Target { get; set; }
 
     public StackEntry(Lumina.Excel.Sheets.Action action, TargetType targ)
@@ -18,7 +18,7 @@ public class StackEntry
         Action = new(action);
         Target = targ;
     }
-    public StackEntry(MOActionWrapper action, TargetType targ)
+    public StackEntry(MoActionRecord action, TargetType targ)
     {
         Action = action;
         Target = targ;
