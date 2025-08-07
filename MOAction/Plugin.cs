@@ -13,6 +13,7 @@ using Dalamud.Plugin.Services;
 using Dalamud.Game;
 using Dalamud.Interface.Windowing;
 using Dalamud.IoC;
+using FFXIVClientStructs.FFXIV.Client.Game;
 using MOAction.Windows;
 using MOAction.Windows.Config;
 
@@ -48,10 +49,6 @@ public class Plugin : IDalamudPlugin
     public readonly Dictionary<uint, List<MoActionStack>> SortedStacks = [];
     public readonly List<Lumina.Excel.Sheets.ClassJob> JobAbbreviations;
     public Dictionary<uint, List<MoActionRecord>> JobActions = [];
-
-    //31-35 are phantom actions 1-5, they're used as flags to be able to build stacks on duty action 1-5
-    //A more elegant solution is something I did not immediately find.
-    public static readonly uint[] UsedDutyActionRowIds = [31, 32, 33, 34, 35];
 
     public Plugin()
     {
@@ -270,10 +267,7 @@ public class Plugin : IDalamudPlugin
         ApplicableActions = [.. Sheets.ActionSheet.Where(row => row is { IsPlayerAction: true, IsPvP: false, ClassJobLevel: > 0 }).Where(a => a.RowId != 212).Select(y => { return new MoActionRecord(y); })];
         if (Configuration.IncludeDutyActions)
         {
-            foreach (uint dutyActionRowId in UsedDutyActionRowIds)
-            {
-                ApplicableActions.Add(new MoActionRecord(Sheets.GeneralActions.GetRow(dutyActionRowId)));
-            }
+            ApplicableActions.AddRange(CreateDutyActions());
         }
         SortActions();
 
@@ -286,12 +280,20 @@ public class Plugin : IDalamudPlugin
             }).ToList();
             if (Configuration.IncludeDutyActions)
             {
-                foreach (uint dutyActionRowId in UsedDutyActionRowIds)
-                {
-                    availableActions.Add(new MoActionRecord(Sheets.GeneralActions.GetRow(dutyActionRowId)));
-                }
+               availableActions.AddRange(CreateDutyActions());
             }
             JobActions.Add(availableJobs.RowId, availableActions);
         }
+    }
+
+    //Create a set of "Duty Actions" for configuration use
+    private List<MoActionRecord> CreateDutyActions()
+    {
+        List<MoActionRecord> dutyActions = new List<MoActionRecord>();
+        for (uint i = 1; i < 6; i++)
+        {
+            dutyActions.Add(new MoActionRecord(i,ActionType.GeneralAction,"Duty Action " + i,false,""));
+        }
+        return dutyActions;
     }
 }

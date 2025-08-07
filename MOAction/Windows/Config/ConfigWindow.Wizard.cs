@@ -55,7 +55,7 @@ public partial class ConfigWindow
         }
         if (ImGui.Button("Import Phantom Actions Mouse-Over for Current job (Requires being logged in!)"))
         {
-            ImportStringToMouseOverActions(Convert.ToBase64String(Encoding.UTF8.GetBytes(File.ReadAllText(Path.Combine(Plugin.PluginInterface.AssemblyLocation.DirectoryName!,DirectoryName,"PHANTOM.json")))));
+            ImportStringToMouseOverActions(Convert.ToBase64String(Encoding.UTF8.GetBytes(File.ReadAllText(Path.Combine(Plugin.PluginInterface.AssemblyLocation.DirectoryName!,DirectoryName,"DUTYACTION.json")))));
             Plugin.SaveStacks();
         }
 

@@ -1,7 +1,6 @@
 namespace MOAction.Configuration;
 
 using FFXIVClientStructs.FFXIV.Client.Game;
-using Lumina.Excel.Sheets;
 
 /// <summary>
 /// POJO containing the data required from a MoAction
@@ -14,16 +13,11 @@ public class MoActionRecord(uint rowId, ActionType actionType, string name, bool
     public bool TargetArea { get; private set; } = targetArea;
     public string ClassJobCategory {get; private set; } =  classJobCategory;
 
-    public MoActionRecord(Action action) : this(action.RowId, ActionType.Action, action.Name.ExtractText(), action.TargetArea, action.ClassJobCategory.Value.Name.ExtractText())
+    public MoActionRecord(Lumina.Excel.Sheets.Action action) : this(action.RowId, ActionType.Action, action.Name.ExtractText(), action.TargetArea, action.ClassJobCategory.Value.Name.ExtractText())
     {
     }
 
-    public MoActionRecord(GeneralAction generalAction) : this(generalAction.RowId, ActionType.GeneralAction,
-        generalAction.Name.ExtractText(), false, "")
-    {
-    }
-
-    public MoActionRecord() : this(0, ActionType.None, "", false,"")
+    public MoActionRecord() : this(0, ActionType.None, "Default", false,"ADV")
     {
     }
 

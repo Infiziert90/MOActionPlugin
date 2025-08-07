@@ -14,25 +14,10 @@ public class MoActionStack : IEquatable<MoActionStack>, IComparable<MoActionStac
 
     public VirtualKey Modifier { get; set; }
 
-    public MoActionStack(Lumina.Excel.Sheets.Action baseAction, List<StackEntry> list)
-    {
-        BaseAction = new(baseAction);
-        Entries = list ?? [];
-        Job = uint.MaxValue;
-        Modifier = 0;
-    }
-
-    public MoActionStack(Lumina.Excel.Sheets.GeneralAction baseAction, List<StackEntry> list)
-    {
-        BaseAction = new(baseAction);
-        Entries = list ?? [];
-        Job = uint.MaxValue;
-        Modifier = 0;
-    }
      public MoActionStack(MoActionRecord baseAction, List<StackEntry> list)
     {
         BaseAction = baseAction;
-        Entries = list ?? [];
+        Entries = list;
         Job = uint.MaxValue;
         Modifier = 0;
     }
@@ -103,11 +88,6 @@ public class MoActionStack : IEquatable<MoActionStack>, IComparable<MoActionStac
     public string GetJobAbr()
     {
         return Job == uint.MaxValue ? "Unset Job" : Sheets.ClassJobSheet.First(x => x.RowId == Job).Abbreviation.ExtractText();
-    }
-
-    public string ToJobString()
-    {
-        return Job == uint.MaxValue ? "Unset Job" : Job.ToString();
     }
 
     public override string ToString() => $"{BaseAction.Name} - {string.Join(", ",Entries.Select(entry => $"[{entry}]"))}";

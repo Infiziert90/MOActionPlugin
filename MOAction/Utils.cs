@@ -29,24 +29,21 @@ public static class Utils
     /// <summary>
     /// Grabs whatever actionId is currently inside the duty action slot with index 0-4
     /// </summary>
-    /// <param name="rowId">the rowId of the general actions used as placeholder, ranging from 31 to 35</param>
+    /// <param name="rowId">the rowId of the general actions used as placeholder, ranging from 1-5</param>
     /// <param name="action">out parameter, the duty action</param>
     /// <returns>success or not</returns>
     public static unsafe bool GetDutyActionRow(uint rowId, out Action action)
     {
         var actionManager = ActionManager.Instance();
-        if (rowId is < 30 or > 36)
+        if (rowId > 6)
         {
                 action = default;
                 return false;
         }
-        //Phantom actions are 31-35, so to get slot 0-4 from 31-35
-        var dutyActionSlot = rowId - 31;
-        var id = DutyActionManager.GetDutyActionId((ushort)dutyActionSlot);
-
+        var id = DutyActionManager.GetDutyActionId((ushort)(rowId - 1));
         if (id > 0)
         {
-            Plugin.PluginLog.Verbose($"Duty Action with rowID {id} selected from duty action slot {dutyActionSlot}");
+            Plugin.PluginLog.Verbose($"Duty Action with rowID {id} selected from duty action slot {rowId-1}");
             return Sheets.ActionSheet.TryGetRow(actionManager->GetAdjustedActionId(id), out action);
         }
 
