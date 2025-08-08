@@ -1,133 +1,159 @@
 [
-    {
-        "BaseId": 190,
-        "Stack": [
-            {
-                "Item1": "UI Mouseover",
-                "Item2": 190
-            },
-            {
-                "Item1": "Target",
-                "Item2": 190
-            }
-        ],
-        "Modifier": 0,
-        "JobIdx": 28
-    },
-    {
-        "BaseId": 173,
-        "Stack": [
-            {
-                "Item1": "UI Mouseover",
-                "Item2": 173
-            },
-            {
-                "Item1": "Target",
-                "Item2": 173
-            }
-        ],
-        "Modifier": 0,
-        "JobIdx": 28
-    },
-    {
-        "BaseId": 185,
-        "Stack": [
-            {
-                "Item1": "UI Mouseover",
-                "Item2": 185
-            },
-            {
-                "Item1": "Target",
-                "Item2": 185
-            }
-        ],
-        "Modifier": 0,
-        "JobIdx": 28
-    },
-    {
-        "BaseId": 189,
-        "Stack": [
-            {
-                "Item1": "UI Mouseover",
-                "Item2": 189
-            },
-            {
-                "Item1": "Target",
-                "Item2": 189
-            }
-        ],
-        "Modifier": 0,
-        "JobIdx": 28
-    },
-    {
-        "BaseId": 188,
-        "Stack": [
-            {
-                "Item1": "Target",
-                "Item2": 188
-            }
-        ],
-        "Modifier": 0,
-        "JobIdx": 28
-    },
-    {
-        "BaseId": 3585,
-        "Stack": [
-            {
-                "Item1": "UI Mouseover",
-                "Item2": 3585
-            },
-            {
-                "Item1": "Target",
-                "Item2": 3585
-            }
-        ],
-        "Modifier": 0,
-        "JobIdx": 28
-    },
-    {
-        "BaseId": 7434,
-        "Stack": [
-            {
-                "Item1": "UI Mouseover",
-                "Item2": 7434
-            },
-            {
-                "Item1": "Target",
-                "Item2": 7434
-            }
-        ],
-        "Modifier": 0,
-        "JobIdx": 28
-    },
-    {
-        "BaseId": 7437,
-        "Stack": [
-            {
-                "Item1": "UI Mouseover",
-                "Item2": 7437
-            },
-            {
-                "Item1": "Target",
-                "Item2": 7437
-            }
-        ],
-        "Modifier": 0,
-        "JobIdx": 28
-    },
-    {
-        "BaseId": 25867,
-        "Stack": [
-            {
-                "Item1": "UI Mouseover",
-                "Item2": 25867
-            },
-            {
-                "Item1": "Target",
-                "Item2": 25867
-            }
-        ],
-        "Modifier": 0,
-        "JobIdx": 28
-    }
+  {
+    "BaseId": 190,
+    "ActionType": 1,
+    "ConfigurationActionStacks": [
+      {
+        "Target": "UI Mouseover",
+        "ActionId": 190,
+        "ActionType": 1
+      },
+      {
+        "Target": "Target",
+        "ActionId": 190,
+        "ActionType": 1
+      }
+    ],
+    "Modifier": 0,
+    "JobIdx": 28
+  },
+  {
+    "BaseId": 173,
+    "ActionType": 1,
+    "ConfigurationActionStacks": [
+      {
+        "Target": "UI Mouseover",
+        "ActionId": 173,
+        "ActionType": 1
+      },
+      {
+        "Target": "Target",
+        "ActionId": 173,
+        "ActionType": 1
+      }
+    ],
+    "Modifier": 0,
+    "JobIdx": 28
+  },
+  {
+    "BaseId": 185,
+    "ActionType": 1,
+    "ConfigurationActionStacks": [
+      {
+        "Target": "UI Mouseover",
+        "ActionId": 185,
+        "ActionType": 1
+      },
+      {
+        "Target": "Target",
+        "ActionId": 185,
+        "ActionType": 1
+      }
+    ],
+    "Modifier": 0,
+    "JobIdx": 28
+  },
+  {
+    "BaseId": 189,
+    "ActionType": 1,
+    "ConfigurationActionStacks": [
+      {
+        "Target": "UI Mouseover",
+        "ActionId": 189,
+        "ActionType": 1
+      },
+      {
+        "Target": "Target",
+        "ActionId": 189,
+        "ActionType": 1
+      }
+    ],
+    "Modifier": 0,
+    "JobIdx": 28
+  },
+  {
+    "BaseId": 188,
+    "ActionType": 1,
+    "ConfigurationActionStacks": [
+      {
+        "Target": "Target",
+        "ActionId": 188,
+        "ActionType": 1
+      }
+    ],
+    "Modifier": 0,
+    "JobIdx": 28
+  },
+  {
+    "BaseId": 3585,
+    "ActionType": 1,
+    "ConfigurationActionStacks": [
+      {
+        "Target": "UI Mouseover",
+        "ActionId": 3585,
+        "ActionType": 1
+      },
+      {
+        "Target": "Target",
+        "ActionId": 3585,
+        "ActionType": 1
+      }
+    ],
+    "Modifier": 0,
+    "JobIdx": 28
+  },
+  {
+    "BaseId": 7434,
+    "ActionType": 1,
+    "ConfigurationActionStacks": [
+      {
+        "Target": "UI Mouseover",
+        "ActionId": 7434,
+        "ActionType": 1
+      },
+      {
+        "Target": "Target",
+        "ActionId": 7434,
+        "ActionType": 1
+      }
+    ],
+    "Modifier": 0,
+    "JobIdx": 28
+  },
+  {
+    "BaseId": 7437,
+    "ActionType": 1,
+    "ConfigurationActionStacks": [
+      {
+        "Target": "UI Mouseover",
+        "ActionId": 7437,
+        "ActionType": 1
+      },
+      {
+        "Target": "Target",
+        "ActionId": 7437,
+        "ActionType": 1
+      }
+    ],
+    "Modifier": 0,
+    "JobIdx": 28
+  },
+  {
+    "BaseId": 25867,
+    "ActionType": 1,
+    "ConfigurationActionStacks": [
+      {
+        "Target": "UI Mouseover",
+        "ActionId": 25867,
+        "ActionType": 1
+      },
+      {
+        "Target": "Target",
+        "ActionId": 25867,
+        "ActionType": 1
+      }
+    ],
+    "Modifier": 0,
+    "JobIdx": 28
+  }
 ]

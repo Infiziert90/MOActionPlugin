@@ -25,19 +25,20 @@ public partial class ConfigWindow
             Dalamud.Utility.Util.OpenLink("https://youtu.be/pm4eCxD90gs");
 
         ImGui.Checkbox("Stack entry fails if target is out of range.", ref Plugin.Configuration.RangeCheck);
+        ImGui.Checkbox("Enable Duty Actions as stacks", ref Plugin.Configuration.IncludeDutyActions);
         ImGui.TextUnformatted("MoAction Crosshair location (you'll have to draw it yourself with an overlay)");
         ImGui.SetNextItemWidth(100);
-        ImGui.InputInt("X-coordinate",ref Plugin.Configuration.CrosshairWidth);
+        ImGui.InputInt("X-coordinate", ref Plugin.Configuration.CrosshairWidth);
         ImGui.SetNextItemWidth(100);
-        ImGui.InputInt("Y-coordinate",ref Plugin.Configuration.CrosshairHeight);
+        ImGui.InputInt("Y-coordinate", ref Plugin.Configuration.CrosshairHeight);
         ImGui.Checkbox("Enable Crosshair Draw", ref Plugin.Configuration.DrawCrosshair);
         if (Plugin.Configuration.DrawCrosshair)
         {
             using var indent = ImRaii.PushIndent(10.0f);
             ImGui.SetNextItemWidth(100);
-            ImGui.InputFloat("Size",ref Plugin.Configuration.CrosshairSize);
+            ImGui.InputFloat("Size", ref Plugin.Configuration.CrosshairSize);
             ImGui.SetNextItemWidth(100);
-            ImGui.InputFloat("Thickness",ref Plugin.Configuration.CrosshairThickness);
+            ImGui.InputFloat("Thickness", ref Plugin.Configuration.CrosshairThickness);
 
             var spacing = ImGui.CalcTextSize("Target Acquired").X + (ImGui.GetFrameHeightWithSpacing() * 2);
             Helper.ColorPickerWithReset("No Target", ref Plugin.Configuration.CrosshairInvalidColor, ImGuiColors.DalamudRed, spacing);
@@ -56,6 +57,7 @@ public partial class ConfigWindow
         if (ImGui.Button("Import stacks from clipboard"))
         {
             ImportStringToMouseOverActions(ImGui.GetClipboardText());
+            Plugin.SaveStacks();
         }
 
         using var child = ImRaii.Child("scrolling", Vector2.Zero, true);
@@ -99,6 +101,7 @@ public partial class ConfigWindow
         if (ImGui.Button("Save"))
         {
             Plugin.SaveStacks();
+            Plugin.InitUsableActions();
         }
 
         ImGui.SameLine();
@@ -106,6 +109,7 @@ public partial class ConfigWindow
         {
             IsOpen = false;
             Plugin.SaveStacks();
+            Plugin.InitUsableActions();
         }
 
         ImGui.SameLine();
@@ -113,7 +117,7 @@ public partial class ConfigWindow
         {
             if (Plugin.ClientState.LocalPlayer != null)
             {
-                MoActionStack stack = new(default, null);
+                MoActionStack stack = new();
                 var job = Plugin.ClientState.LocalPlayer.ClassJob.RowId;
 
                 stack.Job = job;
@@ -122,7 +126,7 @@ public partial class ConfigWindow
             }
             else
             {
-                Plugin.NewStacks.Add(new MoActionStack(default, []));
+                Plugin.NewStacks.Add(new MoActionStack());
             }
         }
     }
@@ -135,7 +139,7 @@ public partial class ConfigWindow
             var targetComboLength = ImGui.CalcTextSize("Target of Target   ").X + ImGui.GetFrameHeightWithSpacing();
 
             var entry = list.ElementAt(i);
-            if (!ImGui.CollapsingHeader(entry.BaseAction.RowId == 0 ? "Unset Action###" : $"{entry.BaseAction.Name.ExtractText()}###"))
+            if (!ImGui.CollapsingHeader(entry.BaseAction.RowId == 0 ? "Unset Action###" : $"{entry.BaseAction.Name}###"))
                 continue;
 
             // Require user to select a job, filtering actions down.
@@ -152,9 +156,9 @@ public partial class ConfigWindow
                         var job = c.RowId;
                         if (entry.Job != job)
                         {
-                            entry.BaseAction = default;
+                            entry.BaseAction = new();
                             foreach (var stackentry in entry.Entries)
-                                stackentry.Action = default;
+                                stackentry.Action = new();
                         }
 
                         entry.Job = job;
@@ -177,27 +181,32 @@ public partial class ConfigWindow
             if (entry.Job is > 0 and < uint.MaxValue)
             {
                 using var indent = ImRaii.PushIndent();
-                ExcelSheetSelector<Lumina.Excel.Sheets.Action>.ExcelSheetComboOptions actionOptions = new()
-                {
-                    FormatRow = a => a.RowId switch { _ => a.Name.ExtractText() },
-                    FilteredSheet = Plugin.JobActions[entry.Job],
-                };
+                var actionOptions = Plugin.JobActions[entry.Job];
 
                 // Select base action.
                 ImGui.SetNextItemWidth(200);
                 var baseSelected = entry.BaseAction.RowId;
-                if (ExcelSheetSelector<Lumina.Excel.Sheets.Action>.ExcelSheetCombo("Base Action", ref baseSelected, entry.Job, actionOptions))
+                using (var combo = ImRaii.Combo("Base Action", entry.BaseAction.Name))
                 {
-                    var ability = Sheets.ActionSheet.GetRow(baseSelected);
+                    if (combo.Success)
+                    {
+                        foreach (var action in actionOptions)
+                        {
+                            if (!ImGui.Selectable(action.Name))
+                                continue;
+                            entry.BaseAction = action;
+                            if (entry.Entries.Count == 0)
+                            {
+                                entry.Entries.Add(new StackEntry(action, Plugin.TargetTypes[0]));
+                            }
+                            else
+                            {
+                                entry.Entries[0].Action = action;
+                            }
+                        }
 
-                    // By default, add UI mouseover as the first TargetType
-                    entry.BaseAction = ability;
-                    if (entry.Entries.Count == 0)
-                        entry.Entries.Add(new StackEntry(ability, Plugin.TargetTypes[0]));
-                    else
-                        entry.Entries[0].Action = ability;
+                    }
                 }
-
                 if (entry.BaseAction.RowId == 0)
                     continue;
 
@@ -226,15 +235,22 @@ public partial class ConfigWindow
                         ImGui.SameLine();
                         ImGui.SetNextItemWidth(200);
                         var selected = stackEntry.Action.RowId;
-                        if (ExcelSheetSelector<Lumina.Excel.Sheets.Action>.ExcelSheetCombo("Ability", ref selected, entry.Job, actionOptions))
+                        using (var combo = ImRaii.Combo("Ability", stackEntry.Action.Name))
                         {
-                            var ability = Sheets.ActionSheet.GetRow(selected);
+                            if (combo.Success)
+                            {
+                                foreach (var action in actionOptions)
+                                {
+                                    if (!ImGui.Selectable(action.Name))
+                                        continue;
 
-                            stackEntry.Action = ability;
-                            if (ability.TargetArea && Plugin.GroundTargetTypes == stackEntry.Target)
-                                stackEntry.Target = null;
+                                    stackEntry.Action = action;
+                                    if (action.TargetArea && Plugin.GroundTargetTypes == stackEntry.Target)
+                                        stackEntry.Target = null;
+                                }
+
+                            }
                         }
-
                         // Only show delete and reorder buttons if more than 1 entry
                         if (entry.Entries.Count <= 1)
                             continue;
