@@ -6,7 +6,6 @@ using Dalamud.Interface.Colors;
 using Dalamud.Interface.Components;
 using Dalamud.Interface.Utility.Raii;
 using Dalamud.Bindings.ImGui;
-using Dalamud.Plugin.Services;
 using MOAction.Configuration;
 
 namespace MOAction.Windows.Config;
@@ -120,10 +119,12 @@ public partial class ConfigWindow
             {
                 MoActionStack stack = new(new MoActionRecord(),[]);
                 var job = Plugin.PlayerState.ClassJob.RowId;
-
-                stack.Job = job;
-                Plugin.NewStacks.Add(stack);
                 Plugin.PluginLog.Debug($"Localplayer job was {job}");
+                if (Utils.IsADiscipleOfWarOrMagicJob(job))
+                {
+                    stack.Job = job;
+                }
+                Plugin.NewStacks.Add(stack);
             }
             else
             {
