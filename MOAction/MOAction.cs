@@ -220,6 +220,10 @@ public class MOAction
     public unsafe IGameObject? GetActorFromCrosshairLocation() =>
         Plugin.Objects.CreateObjectReference((nint)TargetSystem.Instance()->GetMouseOverObject(Plugin.Configuration.CrosshairWidth, Plugin.Configuration.CrosshairHeight));
 
-    private static bool VerifyJobEqualsOrEqualsParentJob(uint job, uint localPlayerRowId) =>
-        localPlayerRowId == job || (Sheets.ClassJobSheet.TryGetRow(job, out var classjob) && localPlayerRowId == classjob.ClassJobParent.RowId);
+    private static bool VerifyJobEqualsOrEqualsParentJob(uint job, uint localPlayerRowId)
+    {
+        if (localPlayerRowId == job) return true;
+        var parentJob = Utils.ConvertARRJobToClass(job);
+        return parentJob == localPlayerRowId;
+    }
 }
