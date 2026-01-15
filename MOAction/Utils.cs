@@ -31,9 +31,7 @@ public static class Utils
     /// <returns></returns>
     public static uint ConvertARRJobToClass(uint jobId)
     {
-        //ClassJobCategorySheet.RowId = 110 is the Disciple of War or Magic JOBS category
-        if (Sheets.ClassJobCategorySheet.TryGetRow(110, out var category) &&
-            Sheets.ClassJobSheet.TryGetRow(jobId, out var cj) && HasJob(category, cj))
+        if (Sheets.ClassJobSheet.TryGetRow(jobId, out var cj) && HasJob(Sheets.JobsOfMagicAndWarCategory, cj))
         {
             //If it's a job, grab its parent, non-ARR jobs return themselves as parent.
             Plugin.PluginLog.Verbose($"Clasjob rowid {cj.RowId} - parent rowid {cj.ClassJobParent.RowId}");
@@ -50,10 +48,8 @@ public static class Utils
     /// <returns></returns>
     public static bool IsADiscipleOfWarOrMagicJob(uint jobId)
     {
-        //ClassJobCategorySheet.RowId = 110 is the Disciple of War or Magic JOBS category
-        if (Sheets.ClassJobCategorySheet.TryGetRow(110, out var category) &&
-            Sheets.ClassJobSheet.TryGetRow(jobId, out var cj))
-            return HasJob(category, cj);
+        if (Sheets.ClassJobSheet.TryGetRow(jobId, out var cj))
+            return HasJob(Sheets.JobsOfMagicAndWarCategory, cj);
 
         return false;
     }
