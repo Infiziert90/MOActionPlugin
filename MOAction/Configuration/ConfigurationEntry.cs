@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using Newtonsoft.Json;
+using FFXIVClientStructs.FFXIV.Client.Game;
 
 namespace MOAction.Configuration;
 
@@ -10,16 +11,19 @@ public class ConfigurationEntry
 {
     public uint BaseId;
     public List<ConfigurationActionStack> ConfigurationActionStacks;
+    public ActionType ActionType;
     public VirtualKey Modifier;
     public uint JobIdx;
 
 
-    public ConfigurationEntry(uint baseId, List<ConfigurationActionStack> configurationActionStacks, VirtualKey modifier, uint job)
+    public ConfigurationEntry(uint baseId, List<ConfigurationActionStack> configurationActionStacks, VirtualKey modifier, uint job,
+        ActionType actionType)
     {
         BaseId = baseId;
         ConfigurationActionStacks = configurationActionStacks;
         Modifier = modifier;
         JobIdx = job;
+        ActionType = actionType;
     }
 
     [JsonConstructor]
@@ -29,10 +33,12 @@ public class ConfigurationEntry
         VirtualKey modifier,
         uint? jobIdx,
         string? job,
-        List<(string, uint)>? stack)
+        List<(string, uint)>? stack,
+        ActionType actionType = 0)
     {
         BaseId = baseId;
         Modifier = modifier;
+        ActionType = actionType == 0 ? ActionType.Action : actionType;
 
         if (jobIdx is not null)
         {
@@ -58,7 +64,7 @@ public class ConfigurationEntry
                 return;
 
             foreach (var tuple in stack)
-                ConfigurationActionStacks.Add(new ConfigurationActionStack(tuple.Item1, tuple.Item2));
+                ConfigurationActionStacks.Add(new ConfigurationActionStack(tuple.Item1, tuple.Item2, ActionType.Action));
         }
     }
 
@@ -66,10 +72,11 @@ public class ConfigurationEntry
         => $"BaseId: {BaseId}, Modifier: {Modifier}, JobIdx: {JobIdx}, Stacks: {ConfigurationActionStacks.Count}";
 
     [Serializable]
-    public class ConfigurationActionStack(string target, uint actionId)
+    public class ConfigurationActionStack(string target, uint actionId, ActionType actionType)
     {
         public string Target { get; set; } = target;
         public uint ActionId { get; set; } = actionId;
+        public ActionType ActionType { get; set; } = actionType == default ? ActionType.Action : actionType;
 
         public override string ToString()
             => $"Target: {Target}, ActionId: {ActionId}";

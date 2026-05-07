@@ -2,14 +2,13 @@
 using Dalamud.Game.ClientState.Keys;
 using System.Collections.Generic;
 using System.Linq;
-using Action = Lumina.Excel.Sheets.Action;
 
 namespace MOAction.Configuration;
 
-public class MoActionStack(Action baseAction, List<StackEntry> list) : IEquatable<MoActionStack>, IComparable<MoActionStack>
+public class MoActionStack(MoActionRecord baseAction, List<StackEntry> list) : IEquatable<MoActionStack>, IComparable<MoActionStack>
 {
     public static readonly VirtualKey[] AllKeys = [VirtualKey.NO_KEY, VirtualKey.SHIFT, VirtualKey.MENU, VirtualKey.CONTROL];
-    public Action BaseAction { get; set; } = baseAction;
+    public MoActionRecord BaseAction { get; set; } = baseAction;
     public List<StackEntry> Entries { get; set; } = list ?? [];
     public uint Job { get; set; } = uint.MaxValue;
 

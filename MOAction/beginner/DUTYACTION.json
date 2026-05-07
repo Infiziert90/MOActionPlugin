@@ -1,0 +1,107 @@
+﻿[
+  {
+    "$type": "MOAction.Configuration.ConfigurationEntry, MOAction",
+    "BaseId": 1,
+    "ActionType": 5,
+    "ConfigurationActionStacks": [
+      {
+        "$type": "MOAction.Configuration.ConfigurationEntry+ConfigurationActionStack, MOAction",
+        "Target": "UI Mouseover",
+        "ActionId": 1,
+        "ActionType": 5
+      },
+      {
+        "$type": "MOAction.Configuration.ConfigurationEntry+ConfigurationActionStack, MOAction",
+        "Target": "Target",
+        "ActionId": 1,
+        "ActionType": 5
+      }
+    ],
+    "Modifier": 0,
+    "JobIdx": 0
+  },
+  {
+    "$type": "MOAction.Configuration.ConfigurationEntry, MOAction",
+    "BaseId": 2,
+    "ActionType": 5,
+    "ConfigurationActionStacks": [
+      {
+        "$type": "MOAction.Configuration.ConfigurationEntry+ConfigurationActionStack, MOAction",
+        "Target": "UI Mouseover",
+        "ActionId": 2,
+        "ActionType": 5
+      },
+      {
+        "$type": "MOAction.Configuration.ConfigurationEntry+ConfigurationActionStack, MOAction",
+        "Target": "Target",
+        "ActionId": 2,
+        "ActionType": 5
+      }
+    ],
+    "Modifier": 0,
+    "JobIdx": 0
+  },
+  {
+    "$type": "MOAction.Configuration.ConfigurationEntry, MOAction",
+    "BaseId": 3,
+    "ActionType": 5,
+    "ConfigurationActionStacks": [
+      {
+        "$type": "MOAction.Configuration.ConfigurationEntry+ConfigurationActionStack, MOAction",
+        "Target": "UI Mouseover",
+        "ActionId": 3,
+        "ActionType": 5
+      },
+      {
+        "$type": "MOAction.Configuration.ConfigurationEntry+ConfigurationActionStack, MOAction",
+        "Target": "Target",
+        "ActionId": 3,
+        "ActionType": 5
+      }
+    ],
+    "Modifier": 0,
+    "JobIdx": 0
+  },
+  {
+    "$type": "MOAction.Configuration.ConfigurationEntry, MOAction",
+    "BaseId": 4,
+    "ActionType": 5,
+    "ConfigurationActionStacks": [
+      {
+        "$type": "MOAction.Configuration.ConfigurationEntry+ConfigurationActionStack, MOAction",
+        "Target": "UI Mouseover",
+        "ActionId": 4,
+        "ActionType": 5
+      },
+      {
+        "$type": "MOAction.Configuration.ConfigurationEntry+ConfigurationActionStack, MOAction",
+        "Target": "Target",
+        "ActionId": 4,
+        "ActionType": 5
+      }
+    ],
+    "Modifier": 0,
+    "JobIdx": 0
+  },
+  {
+    "$type": "MOAction.Configuration.ConfigurationEntry, MOAction",
+    "BaseId": 5,
+    "ActionType": 5,
+    "ConfigurationActionStacks": [
+      {
+        "$type": "MOAction.Configuration.ConfigurationEntry+ConfigurationActionStack, MOAction",
+        "Target": "UI Mouseover",
+        "ActionId": 5,
+        "ActionType": 5
+      },
+      {
+        "$type": "MOAction.Configuration.ConfigurationEntry+ConfigurationActionStack, MOAction",
+        "Target": "Target",
+        "ActionId": 5,
+        "ActionType": 5
+      }
+    ],
+    "Modifier": 0,
+    "JobIdx": 0
+  }
+]

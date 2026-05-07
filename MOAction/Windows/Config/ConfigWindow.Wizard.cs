@@ -51,7 +51,12 @@ public partial class ConfigWindow
         if (ImGui.Button("Import Sage Basics"))
         {
             ImportStringToMouseOverActions(Convert.ToBase64String(Encoding.UTF8.GetBytes(File.ReadAllText(Path.Combine(Plugin.PluginInterface.AssemblyLocation.DirectoryName!,DirectoryName,"SGE.json")))));
-             Plugin.SaveStacks();
+            Plugin.SaveStacks();
+        }
+        if (ImGui.Button("Import Phantom Actions Mouse-Over for Current job (Requires being logged in!)"))
+        {
+            ImportStringToMouseOverActions(Convert.ToBase64String(Encoding.UTF8.GetBytes(File.ReadAllText(Path.Combine(Plugin.PluginInterface.AssemblyLocation.DirectoryName!,DirectoryName,"DUTYACTION.json")))));
+            Plugin.SaveStacks();
         }
 
         return Tabs.Wizard;
